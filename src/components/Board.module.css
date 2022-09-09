@@ -1,3 +1,7 @@
+.board {
+  width: calc(8 * var(--piece-size));
+}
+
 .row {
   height: var(--piece-size);
 }
