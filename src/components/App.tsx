@@ -4,8 +4,7 @@ import Board from "./Board";
 
 export default function App() {
   const [scale, setScale] = useState(1.5);
-
-  const $board = useMemo(() => <Board board={initBoard()} />, []);
+  const board = useMemo(() => initBoard(), []);
 
   return (
     <div id="app" style={{ ["--scale"]: scale } as CSSProperties}>
@@ -17,7 +16,7 @@ export default function App() {
         value={scale}
         onChange={(e) => setScale(e.target.value as unknown as number)}
       />
-      {$board}
+      <Board board={board} />
     </div>
   );
 }
