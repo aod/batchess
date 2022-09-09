@@ -1,4 +1,4 @@
-:root {
+#app {
   --scale: 1.5;
   --piece-svg-size: 45px;
   --piece-size: calc(var(--piece-svg-size) * var(--scale));
