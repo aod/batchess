@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
 import { Piece as TPiece, PieceKind } from "../lib";
+import { motion } from "framer-motion";
 import styles from "./Piece.module.css";
 
 export interface PieceProps {
@@ -8,9 +9,15 @@ export interface PieceProps {
 
 export default function Piece(props: PieceProps) {
   return (
-    <div
+    <motion.div
       className={styles.piece}
       data-kind={PieceKind[props.piece.kind]}
+      dragSnapToOrigin
+      drag
+      dragTransition={{
+        bounceStiffness: 200,
+        bounceDamping: 30,
+      }}
       style={
         {
           ["--piece-offset"]: props.piece.kind,
