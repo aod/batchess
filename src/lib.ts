@@ -1,5 +1,3 @@
-export const PiecesAmount = 6;
-
 export enum PieceKind {
   King,
   Queen,
