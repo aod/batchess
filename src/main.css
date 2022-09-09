@@ -2,4 +2,7 @@
   --scale: 1.5;
   --piece-svg-size: 45px;
   --piece-size: calc(var(--piece-svg-size) * var(--scale));
+
+  --light-square-color: #ffce9e;
+  --dark-square-color: #d18b47;
 }

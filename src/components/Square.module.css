@@ -1,0 +1,6 @@
+.square {
+  background-color: var(--square-color);
+  width: var(--piece-size);
+  height: var(--piece-size);
+  display: inline-block;
+}
