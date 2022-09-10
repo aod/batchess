@@ -1,8 +1,15 @@
+:root,
 #app {
-  --scale: 1.5;
-  --piece-svg-size: 45px;
-  --piece-size: calc(var(--piece-svg-size) * var(--scale));
-
+  --board-size: min(100vw, 650px);
+  --piece-size: calc(var(--board-size) / 8);
   --light-square-color: #ffce9e;
   --dark-square-color: #d18b47;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
 }

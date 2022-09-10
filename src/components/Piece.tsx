@@ -2,7 +2,7 @@ import { CSSProperties, useContext } from "react";
 import { Piece as TPiece, PieceKind } from "../lib";
 import { motion } from "framer-motion";
 import styles from "./Piece.module.css";
-import { DragConstraintRefContext } from "./Board";
+import { CurrPieceCoordSetterContext, DragConstraintRefContext } from "./Board";
 
 export interface PieceProps {
   piece: TPiece;
@@ -10,6 +10,7 @@ export interface PieceProps {
 
 export default function Piece(props: PieceProps) {
   const ref = useContext(DragConstraintRefContext);
+  const setCoord = useContext(CurrPieceCoordSetterContext);
 
   return (
     <motion.div
@@ -21,6 +22,10 @@ export default function Piece(props: PieceProps) {
         bounceStiffness: 200,
         bounceDamping: 30,
       }}
+      onDrag={(_, info) => {
+        setCoord({ x: info.point.x, y: info.point.y });
+      }}
+      onDragEnd={() => setCoord(null)}
       dragConstraints={ref}
       dragElastic={0.1}
       style={

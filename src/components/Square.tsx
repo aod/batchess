@@ -2,12 +2,12 @@ import styles from "./Square.module.css";
 import { CSSProperties, PropsWithChildren } from "react";
 import { Rank, File } from "../lib";
 
-export interface SquareProps extends PropsWithChildren {
+export interface SquareProps {
   rank: Rank;
   file: File;
 }
 
-export default function Square(props: SquareProps) {
+export default function Square(props: PropsWithChildren<SquareProps>) {
   let isDark = props.rank % 2 == 0;
   if ((props.file.charCodeAt(0) - 97) % 2 == 0) isDark = !isDark;
 
