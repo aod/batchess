@@ -3,4 +3,13 @@
   width: var(--piece-size);
   height: var(--piece-size);
   display: inline-block;
+  background-color: var(--color);
+}
+
+.dark {
+  --color: var(--dark-square-color);
+}
+
+.light {
+  --color: var(--light-square-color);
 }

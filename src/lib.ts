@@ -23,8 +23,11 @@ export type Board = { [K in Position]: Piece | null };
 
 export type Player = "white" | "black";
 
-export function createPosition(f: Readonly<File>, r: Readonly<Rank>): Position {
-  return `${f}${r}` as Position;
+export function createPosition(
+  file: Readonly<File>,
+  rank: Readonly<Rank>
+): Position {
+  return `${file}${rank}` as Position;
 }
 
 function createRankPositioner(

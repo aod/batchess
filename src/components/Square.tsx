@@ -1,6 +1,7 @@
 import styles from "./Square.module.css";
-import { CSSProperties, PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import { Rank, File } from "../lib";
+import clsx from "clsx";
 
 export interface SquareProps {
   rank: Rank;
@@ -12,16 +13,7 @@ export default function Square(props: PropsWithChildren<SquareProps>) {
   if ((props.file.charCodeAt(0) - 97) % 2 == 0) isDark = !isDark;
 
   return (
-    <div
-      className={styles.square}
-      style={
-        {
-          ["--square-color"]: isDark
-            ? "var(--dark-square-color)"
-            : "var(--light-square-color)",
-        } as CSSProperties
-      }
-    >
+    <div className={clsx(styles.square, isDark ? styles.dark : styles.light)}>
       {props.children}
     </div>
   );

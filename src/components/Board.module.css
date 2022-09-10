@@ -1,5 +1,6 @@
 .board {
   width: calc(8 * var(--piece-size));
+  position: relative;
 }
 
 .row {
