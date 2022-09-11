@@ -28,10 +28,16 @@ export interface XY {
   x: number;
   y: number;
 }
-export type CoordSetter = (xy: XY | null) => void;
-export const CurrPieceCoordSetterContext = createContext<CoordSetter>(
-  null as unknown as CoordSetter
-);
+export type CoordSetter = (xy: XY) => void;
+export interface TCurrPieceCoordSetterContext {
+  onPieceMove: CoordSetter;
+  play: () => void;
+  reset: () => void;
+}
+export const CurrPieceCoordSetterContext =
+  createContext<TCurrPieceCoordSetterContext>(
+    {} as unknown as TCurrPieceCoordSetterContext
+  );
 
 export interface BoardProps {
   board?: TBoard;
@@ -44,24 +50,30 @@ export default function Board(props: BoardProps) {
   const [currPieceIdx, setCurrPieceIdx] = useState<XY | null>(null);
   const deferredCurrPieceIdx = useDeferredValue(currPieceIdx);
 
-  const onCoordSet: CoordSetter = (xy) => {
-    if (xy) {
+  const onPieceMove: CoordSetter = (xy) => {
+    const idx = pieceXYToIdxs(xy);
+    if (!currPieceStartIdx) setCurrPieceStartIdx(idx);
+    if (currPieceIdx?.x !== idx.x || currPieceIdx?.y !== idx.y) {
       startTransition(() => {
-        const idx = pieceXYToIdxs(xy);
-        if (!currPieceStartIdx) setCurrPieceStartIdx(idx);
-        if (currPieceIdx?.x !== idx.x || currPieceIdx?.y !== idx.y) {
-          setCurrPieceIdx(idx);
-        }
+        setCurrPieceIdx(idx);
       });
-    } else {
+    }
+  };
+
+  function play() {
+    if (currPieceStartIdx && currPieceIdx) {
       props.onMove?.(
         xyToPosition(currPieceStartIdx!),
         xyToPosition(currPieceIdx!)
       );
-      setCurrPieceStartIdx(null);
-      setCurrPieceIdx(null);
     }
-  };
+    reset();
+  }
+
+  function reset() {
+    setCurrPieceStartIdx(null);
+    setCurrPieceIdx(null);
+  }
 
   function squareSize() {
     return (ref?.current?.clientWidth ?? 0) / 8;
@@ -109,7 +121,9 @@ export default function Board(props: BoardProps) {
   return (
     <div ref={ref} className={styles.board}>
       <DragConstraintRefContext.Provider value={ref}>
-        <CurrPieceCoordSetterContext.Provider value={onCoordSet}>
+        <CurrPieceCoordSetterContext.Provider
+          value={{ onPieceMove, reset, play }}
+        >
           {currPieceStartIdx && (
             <div
               style={{

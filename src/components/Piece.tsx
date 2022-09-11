@@ -1,6 +1,6 @@
-import { CSSProperties, useContext } from "react";
+import { CSSProperties, MouseEvent, useContext, useRef, useState } from "react";
 import { Piece as TPiece, PieceKind } from "../lib";
-import { motion } from "framer-motion";
+import { motion, useDragControls } from "framer-motion";
 import styles from "./Piece.module.css";
 import { CurrPieceCoordSetterContext, DragConstraintRefContext } from "./Board";
 
@@ -10,22 +10,41 @@ export interface PieceProps {
 
 export default function Piece(props: PieceProps) {
   const ref = useContext(DragConstraintRefContext);
-  const setCoord = useContext(CurrPieceCoordSetterContext);
+  const { onPieceMove, reset, play } = useContext(CurrPieceCoordSetterContext);
+
+  const dragControls = useDragControls();
+
+  const [isReset, setIsReset] = useState(false);
+  const isDragging = useRef(false);
 
   return (
     <motion.div
+      animate={{ x: isReset ? 0 : undefined, y: isReset ? 0 : undefined }}
       className={styles.piece}
       data-kind={PieceKind[props.piece.kind]}
       dragSnapToOrigin
+      dragControls={dragControls}
       drag
       dragTransition={{
         bounceStiffness: 200,
         bounceDamping: 30,
       }}
-      onDrag={(_, info) => {
-        setCoord({ x: info.point.x, y: info.point.y });
+      onPointerDown={(e) => {
+        dragControls.start(e, { snapToCursor: true });
+        onPieceMove({ x: e.clientX, y: e.clientY });
+        setIsReset(false);
       }}
-      onDragEnd={() => setCoord(null)}
+      onPointerUp={() => {
+        if (!isDragging.current) reset();
+        setIsReset(true);
+      }}
+      onDrag={(_, info) => {
+        isDragging.current = true;
+        onPieceMove({ x: info.point.x, y: info.point.y });
+      }}
+      onDragEnd={() => {
+        play();
+      }}
       dragConstraints={ref}
       dragElastic={0.1}
       style={
