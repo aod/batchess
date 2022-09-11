@@ -6,3 +6,7 @@
   background-position-y: calc(var(--piece-is-black) * var(--piece-size));
   background-size: calc(6 * var(--piece-size)) calc(2 * var(--piece-size));
 }
+
+.piece:hover {
+  cursor: grab;
+}

@@ -9,9 +9,10 @@ export interface PieceProps {
 }
 
 export default function Piece(props: PieceProps) {
-  const ref = useContext(DragConstraintRefContext);
+  const dragConstraintsRef = useContext(DragConstraintRefContext);
   const { onPieceMove, reset, play } = useContext(CurrPieceCoordSetterContext);
 
+  const ref = useRef<HTMLDivElement>(null);
   const dragControls = useDragControls();
 
   const [isReset, setIsReset] = useState(false);
@@ -19,6 +20,7 @@ export default function Piece(props: PieceProps) {
 
   return (
     <motion.div
+      ref={ref}
       animate={{ x: isReset ? 0 : undefined, y: isReset ? 0 : undefined }}
       className={styles.piece}
       data-kind={PieceKind[props.piece.kind]}
@@ -30,11 +32,13 @@ export default function Piece(props: PieceProps) {
         bounceDamping: 30,
       }}
       onPointerDown={(e) => {
+        ref.current!.style.cursor = "grabbing";
         dragControls.start(e, { snapToCursor: true });
         onPieceMove({ x: e.clientX, y: e.clientY });
         setIsReset(false);
       }}
       onPointerUp={() => {
+        ref.current!.style.cursor = "grab";
         if (!isDragging.current) reset();
         setIsReset(true);
       }}
@@ -45,7 +49,7 @@ export default function Piece(props: PieceProps) {
       onDragEnd={() => {
         play();
       }}
-      dragConstraints={ref}
+      dragConstraints={dragConstraintsRef}
       dragElastic={0.1}
       style={
         {
