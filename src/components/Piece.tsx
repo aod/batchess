@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent, useContext, useRef, useState } from "react";
+import { CSSProperties, useContext, useRef, useState } from "react";
 import { Piece as TPiece, PieceKind } from "../lib";
 import { motion, useDragControls } from "framer-motion";
 import styles from "./Piece.module.css";

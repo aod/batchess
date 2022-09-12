@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { initBoard, Position } from "../lib";
+import { useEffect, useState } from "react";
+import { Board as TBoard, initBoard, Position } from "../lib";
 import Board from "./Board";
 import Controls, { useControls } from "./Controls";
 
@@ -8,14 +8,43 @@ export default function App() {
 
   const { isFlipped } = useControls();
 
-  const [board, setBoard] = useState(initBoard());
+  const [history, setHistory] = useState<TBoard[]>([initBoard()]);
+  const [pointer, setPointer] = useState(0);
+  const board = history.at(pointer)!;
 
   function swapPieces(pos1: Position, pos2: Position) {
-    if (pos1 !== pos2) {
-      playMoveSfx();
-      setBoard(Object.assign(board, { [pos2]: board[pos1], [pos1]: null }));
-    }
+    if (pointer < history.length - 1) return setPointer(history.length - 1);
+    if (pos1 === pos2) return;
+
+    const newBoard = Object.assign({}, board, {
+      [pos2]: board[pos1],
+      [pos1]: null,
+    });
+    setHistory(history.concat(newBoard));
+    setPointer(history.length);
+
+    playMoveSfx();
   }
+
+  useEffect(() => {
+    function changePointer(e: KeyboardEvent) {
+      let delta: number | null = null;
+
+      if (e.key === "ArrowLeft" && pointer > 0) {
+        delta = -1;
+      } else if (e.key === "ArrowRight" && pointer < history.length - 1) {
+        delta = 1;
+      }
+
+      if (delta !== null) {
+        setPointer(pointer + delta);
+        playMoveSfx();
+      }
+    }
+
+    window.addEventListener("keydown", changePointer);
+    return () => window.removeEventListener("keydown", changePointer);
+  }, [history, setHistory, pointer, setPointer]);
 
   return (
     <div id="app">
