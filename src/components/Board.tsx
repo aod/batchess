@@ -3,6 +3,7 @@ import {
   createPosition,
   File,
   Files,
+  flipPosition,
   Position,
   Rank,
   Ranks,
@@ -42,6 +43,7 @@ export const CurrPieceCoordSetterContext =
 export interface BoardProps {
   board?: TBoard;
   onMove?: (from: Position, to: Position) => void;
+  flipped?: boolean;
 }
 
 export default function Board(props: BoardProps) {
@@ -61,12 +63,16 @@ export default function Board(props: BoardProps) {
   };
 
   function play() {
-    if (currPieceStartIdx && currPieceIdx) {
-      props.onMove?.(
-        xyToPosition(currPieceStartIdx!),
-        xyToPosition(currPieceIdx!)
-      );
+    if (!currPieceStartIdx || !currPieceIdx) return;
+
+    let from = xyToPosition(currPieceStartIdx!);
+    let to = xyToPosition(currPieceIdx!);
+    if (props.flipped) {
+      from = flipPosition(from);
+      to = flipPosition(to);
     }
+    props.onMove?.(from, to);
+
     reset();
   }
 
@@ -100,57 +106,52 @@ export default function Board(props: BoardProps) {
     return { x: xIndex, y: yIndex };
   }
 
-  const $pieces = useMemo(
-    () =>
-      Ranks.slice()
-        .reverse()
-        .map((rank, y) => (
-          <div key={y} className={styles.row}>
-            {Files.map((file, x) => (
-              <Square key={x} rank={rank} file={file}>
-                {props.board?.[createPosition(file, rank)] && (
-                  <Piece piece={props.board?.[createPosition(file, rank)]!} />
-                )}
-              </Square>
-            ))}
-          </div>
-        )),
-    [currPieceIdx]
-  );
+  const ranks = props.flipped ? Ranks.slice() : Ranks.slice().reverse();
+  const files = props.flipped ? Files.slice().reverse() : Files.slice();
 
   return (
     <div ref={ref} className={styles.board}>
+      {currPieceStartIdx && (
+        <div
+          style={{
+            position: "absolute",
+            left: currPieceStartIdx.x * squareSize(),
+            top: currPieceStartIdx.y * squareSize(),
+            width: squareSize(),
+            height: squareSize(),
+            backgroundColor: "#e0d33e",
+            opacity: 0.8,
+          }}
+        ></div>
+      )}
+      {deferredCurrPieceIdx && (
+        <div
+          style={{
+            position: "absolute",
+            left: deferredCurrPieceIdx.x * squareSize(),
+            top: deferredCurrPieceIdx.y * squareSize(),
+            width: squareSize(),
+            height: squareSize(),
+            border: "0.25rem solid #e0e0e0",
+          }}
+        ></div>
+      )}
+
       <DragConstraintRefContext.Provider value={ref}>
         <CurrPieceCoordSetterContext.Provider
           value={{ onPieceMove, reset, play }}
         >
-          {currPieceStartIdx && (
-            <div
-              style={{
-                position: "absolute",
-                left: currPieceStartIdx.x * squareSize(),
-                top: currPieceStartIdx.y * squareSize(),
-                width: squareSize(),
-                height: squareSize(),
-                backgroundColor: "#e0d33e",
-                opacity: 0.8,
-              }}
-            ></div>
-          )}
-          {deferredCurrPieceIdx && (
-            <div
-              style={{
-                position: "absolute",
-                left: deferredCurrPieceIdx.x * squareSize(),
-                top: deferredCurrPieceIdx.y * squareSize(),
-                width: squareSize(),
-                height: squareSize(),
-                border: "0.25rem solid #e0e0e0",
-              }}
-            ></div>
-          )}
-
-          {$pieces}
+          {ranks.map((rank, y) => (
+            <div key={y} className={styles.row}>
+              {files.map((file, x) => (
+                <Square key={x} rank={rank} file={file}>
+                  {props.board?.[createPosition(file, rank)] && (
+                    <Piece piece={props.board?.[createPosition(file, rank)]!} />
+                  )}
+                </Square>
+              ))}
+            </div>
+          ))}
         </CurrPieceCoordSetterContext.Provider>
       </DragConstraintRefContext.Provider>
     </div>

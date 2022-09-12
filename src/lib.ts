@@ -30,6 +30,19 @@ export function createPosition(
   return `${file}${rank}` as Position;
 }
 
+export function extractPosition(pos: Readonly<Position>): [File, Rank] {
+  const file = pos[0] as File;
+  const rank = +pos[1] as Rank;
+  return [file, rank];
+}
+
+export function flipPosition(pos: Readonly<Position>): Position {
+  const [file, rank] = extractPosition(pos);
+  const newFile = Files.slice().reverse()[Files.indexOf(file)];
+  const newRank = Ranks.slice().reverse()[Ranks.indexOf(rank)];
+  return createPosition(newFile, newRank);
+}
+
 function createRankPositioner(
   r: Readonly<Rank>
 ): (f: Readonly<File>) => Position {

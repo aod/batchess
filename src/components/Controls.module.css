@@ -1,0 +1,15 @@
+.controls {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.controls button {
+  background-color: unset;
+  border: none;
+}
+
+.controls button:hover {
+  cursor: pointer;
+}

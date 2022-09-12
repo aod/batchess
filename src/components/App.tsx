@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { initBoard, Position } from "../lib";
 import Board from "./Board";
+import Controls, { useControls } from "./Controls";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();
+
+  const { isFlipped } = useControls();
 
   const [board, setBoard] = useState(initBoard());
 
@@ -16,7 +19,8 @@ export default function App() {
 
   return (
     <div id="app">
-      <Board board={board} onMove={swapPieces} />
+      <Board board={board} onMove={swapPieces} flipped={isFlipped} />
+      <Controls />
     </div>
   );
 }
