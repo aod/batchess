@@ -12,9 +12,11 @@ export default function Flip(props: FlipProps) {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      color={color}
       strokeWidth={1.5}
       stroke="currentColor"
-      style={{ color, width: size, height: size }}
     >
       <path
         strokeLinecap="round"
