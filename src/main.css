@@ -9,6 +9,7 @@
 #app {
   height: calc(var(--piece-size) * 8);
   display: flex;
+  gap: 0.5rem;
 }
 
 #root {
@@ -16,4 +17,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 767px) {
+  #app {
+    flex-direction: column;
+  }
 }
