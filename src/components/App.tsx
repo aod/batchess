@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import fen from "../fen";
-import { Board as TBoard, initBoard, Position } from "../lib";
+
 import Board from "./Board";
 import Controls, { useControls } from "./Controls";
 import styles from "./App.module.css";
+
+import TBoard, { boardFEN, initBoard } from "../lib/Board";
+import { SquareNotation } from "../lib/AN";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();
@@ -14,7 +16,7 @@ export default function App() {
   const [pointer, setPointer] = useState(0);
   const board = history.at(pointer)!;
 
-  function swapPieces(pos1: Position, pos2: Position) {
+  function swapPieces(pos1: SquareNotation, pos2: SquareNotation) {
     if (pointer < history.length - 1) return setPointer(history.length - 1);
     if (pos1 === pos2) return;
 
@@ -51,7 +53,7 @@ export default function App() {
   return (
     <div id="app" className={styles.app}>
       <div>
-        <p className={styles.fen}>{fen(board)}</p>
+        <p className={styles.fen}>{boardFEN(board)}</p>
       </div>
       <div className={styles.game}>
         <Board board={board} onMove={swapPieces} flipped={isFlipped} />

@@ -1,5 +1,5 @@
-import Flip from "./icons/Flip";
 import styles from "./Controls.module.css";
+
 import {
   createContext,
   PropsWithChildren,
@@ -8,6 +8,8 @@ import {
   useState,
 } from "react";
 import { motion } from "framer-motion";
+
+import Flip from "./icons/Flip";
 
 export default function Controls() {
   const { flip, isFlipped } = useControls();

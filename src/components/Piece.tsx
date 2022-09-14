@@ -1,11 +1,13 @@
-import { CSSProperties, useContext, useRef, useState } from "react";
-import { Piece as TPiece, PieceKind } from "../lib";
-import { motion, useDragControls } from "framer-motion";
 import styles from "./Piece.module.css";
+import { CSSProperties, useContext, useRef, useState } from "react";
+import { motion, useDragControls } from "framer-motion";
+
 import {
   PieceMoveHandlerContext,
   BoardDragConstraintRefContext,
 } from "./Board";
+
+import TPiece, { PieceKind } from "../lib/Piece";
 
 export interface PieceProps {
   piece: TPiece;
@@ -58,7 +60,7 @@ export default function Piece(props: PieceProps) {
       style={
         {
           ["--piece-offset"]: props.piece.kind,
-          ["--piece-is-black"]: props.piece.isBlack ? 1 : 0,
+          ["--piece-is-black"]: props.piece.isWhite ? 0 : 1,
         } as CSSProperties
       }
     />

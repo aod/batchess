@@ -1,7 +1,9 @@
 import styles from "./Square.module.css";
 import { PropsWithChildren } from "react";
-import { Rank, File } from "../lib";
 import clsx from "clsx";
+
+import File from "../lib/File";
+import Rank from "../lib/Rank";
 
 export interface SquareProps {
   rank: Rank;

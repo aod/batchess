@@ -1,17 +1,13 @@
-import {
-  Board as TBoard,
-  createPosition,
-  File,
-  Files,
-  flipPosition,
-  Position,
-  Rank,
-  Ranks,
-} from "../lib";
-import Square from "./Square";
 import styles from "./Board.module.css";
-import Piece from "./Piece";
 import { createContext, RefObject, useEffect, useRef, useState } from "react";
+
+import Piece from "./Piece";
+import Square from "./Square";
+
+import TBoard, { at } from "../lib/Board";
+import Rank, { Ranks } from "../lib/Rank";
+import File, { Files } from "../lib/File";
+import { flipSquareNotation, SquareNotation, squareNotation } from "../lib/AN";
 
 export const BoardDragConstraintRefContext = createContext<
   RefObject<HTMLDivElement>
@@ -32,8 +28,8 @@ export const PieceMoveHandlerContext = createContext<IPieceMoveHandlerContext>(
 );
 
 export interface BoardProps {
-  board?: TBoard;
-  onMove?: (from: Position, to: Position) => void;
+  board: TBoard;
+  onMove?: (from: SquareNotation, to: SquareNotation) => void;
   flipped?: boolean;
 }
 
@@ -65,8 +61,8 @@ export default function Board(props: BoardProps) {
     let from = xyToPosition(currPieceStartIdx!);
     let to = xyToPosition(currPieceIdx!);
     if (props.flipped) {
-      from = flipPosition(from);
-      to = flipPosition(to);
+      from = flipSquareNotation(from);
+      to = flipSquareNotation(to);
     }
     props.onMove?.(from, to);
 
@@ -140,8 +136,8 @@ export default function Board(props: BoardProps) {
             <div key={y} className={styles.row}>
               {files.map((file, x) => (
                 <Square key={x} rank={rank} file={file}>
-                  {props.board?.[createPosition(file, rank)] && (
-                    <Piece piece={props.board?.[createPosition(file, rank)]!} />
+                  {at(props.board, file, rank) && (
+                    <Piece piece={at(props.board, file, rank)!} />
                   )}
                 </Square>
               ))}
@@ -157,8 +153,8 @@ function clamp(min: number, val: number, max: number) {
   return Math.min(Math.max(val, min), max);
 }
 
-function xyToPosition({ x, y }: XY): Position {
+function xyToPosition({ x, y }: XY) {
   const rank = 8 - y;
-  const file = 97 + x;
-  return createPosition(String.fromCharCode(file) as File, rank as Rank);
+  const file = String.fromCharCode(97 + x);
+  return squareNotation(file as File, rank as Rank);
 }
