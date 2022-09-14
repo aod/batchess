@@ -11,17 +11,9 @@ import {
 import Square from "./Square";
 import styles from "./Board.module.css";
 import Piece from "./Piece";
-import {
-  createContext,
-  RefObject,
-  startTransition,
-  useDeferredValue,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, RefObject, useEffect, useRef, useState } from "react";
 
-export const DragConstraintRefContext = createContext<
+export const BoardDragConstraintRefContext = createContext<
   RefObject<HTMLDivElement>
 >(null as unknown as RefObject<HTMLDivElement>);
 
@@ -30,15 +22,14 @@ export interface XY {
   y: number;
 }
 export type CoordSetter = (xy: XY) => void;
-export interface TCurrPieceCoordSetterContext {
+export interface IPieceMoveHandlerContext {
   onPieceMove: CoordSetter;
   play: () => void;
   reset: () => void;
 }
-export const CurrPieceCoordSetterContext =
-  createContext<TCurrPieceCoordSetterContext>(
-    {} as unknown as TCurrPieceCoordSetterContext
-  );
+export const PieceMoveHandlerContext = createContext<IPieceMoveHandlerContext>(
+  {} as unknown as IPieceMoveHandlerContext
+);
 
 export interface BoardProps {
   board?: TBoard;
@@ -50,15 +41,21 @@ export default function Board(props: BoardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [currPieceStartIdx, setCurrPieceStartIdx] = useState<XY | null>(null);
   const [currPieceIdx, setCurrPieceIdx] = useState<XY | null>(null);
-  const deferredCurrPieceIdx = useDeferredValue(currPieceIdx);
+
+  useEffect(() => {
+    function onBlur() {
+      setCurrPieceStartIdx(null);
+      setCurrPieceIdx(null);
+    }
+    window.addEventListener("blur", onBlur);
+    () => window.removeEventListener("blur", onBlur);
+  }, []);
 
   const onPieceMove: CoordSetter = (xy) => {
     const idx = pieceXYToIdxs(xy);
     if (!currPieceStartIdx) setCurrPieceStartIdx(idx);
     if (currPieceIdx?.x !== idx.x || currPieceIdx?.y !== idx.y) {
-      startTransition(() => {
-        setCurrPieceIdx(idx);
-      });
+      setCurrPieceIdx(idx);
     }
   };
 
@@ -124,12 +121,12 @@ export default function Board(props: BoardProps) {
           }}
         ></div>
       )}
-      {deferredCurrPieceIdx && (
+      {currPieceIdx && (
         <div
           style={{
             position: "absolute",
-            left: deferredCurrPieceIdx.x * squareSize(),
-            top: deferredCurrPieceIdx.y * squareSize(),
+            left: currPieceIdx.x * squareSize(),
+            top: currPieceIdx.y * squareSize(),
             width: squareSize(),
             height: squareSize(),
             border: "0.25rem solid #e0e0e0",
@@ -137,10 +134,8 @@ export default function Board(props: BoardProps) {
         ></div>
       )}
 
-      <DragConstraintRefContext.Provider value={ref}>
-        <CurrPieceCoordSetterContext.Provider
-          value={{ onPieceMove, reset, play }}
-        >
+      <BoardDragConstraintRefContext.Provider value={ref}>
+        <PieceMoveHandlerContext.Provider value={{ onPieceMove, reset, play }}>
           {ranks.map((rank, y) => (
             <div key={y} className={styles.row}>
               {files.map((file, x) => (
@@ -152,8 +147,8 @@ export default function Board(props: BoardProps) {
               ))}
             </div>
           ))}
-        </CurrPieceCoordSetterContext.Provider>
-      </DragConstraintRefContext.Provider>
+        </PieceMoveHandlerContext.Provider>
+      </BoardDragConstraintRefContext.Provider>
     </div>
   );
 }

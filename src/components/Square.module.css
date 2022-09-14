@@ -4,6 +4,7 @@
   height: var(--piece-size);
   display: inline-block;
   background-color: var(--color);
+  user-select: none;
 }
 
 .dark {
