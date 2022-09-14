@@ -59,8 +59,8 @@ export default function App() {
       <div className={styles.game}>
         <LazyMotion strict features={loadMotionFeatures}>
           <Board board={board} onMove={swapPieces} flipped={isFlipped} />
+          <Controls />
         </LazyMotion>
-        <Controls />
       </div>
     </div>
   );
