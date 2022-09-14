@@ -101,7 +101,7 @@ export function boardFEN(board: Board) {
       black: CastlingSide.Both,
     },
     isCurrentTurnWhite: true,
-    fullMoves: 0,
-    halfMoves: 1,
+    halfMoves: 0,
+    fullMoves: 1,
   });
 }
