@@ -5,7 +5,7 @@ export interface FlipProps {
 
 export default function Flip(props: FlipProps) {
   const size = props.size ?? "1.5rem";
-  const color = props.color ?? "grey";
+  const color = props.color ?? "var(--fg-color)";
 
   return (
     <svg

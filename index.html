@@ -2,9 +2,20 @@
 <html lang="en">
   <head>
     <style>
+      :root,
+      #app {
+        --fg-color: #595959;
+        --bg-color: white;
+      }
+      body {
+        color: var(--fg-color);
+        background-color: var(--bg-color);
+      }
       @media (prefers-color-scheme: dark) {
-        body {
-          background-color: #262626;
+        :root,
+        #app {
+          --bg-color: #262626;
+          --fg-color: #b3b3b3;
         }
       }
     </style>
@@ -12,6 +23,7 @@
     <link rel="preload" href="/Chess_Pieces_Sprite.svg" as="image" />
     <link rel="preload" href="/Move.ogg" as="audio" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Freakin cool chess game! Wow!" />
     <title>Batchess</title>
   </head>
   <body>

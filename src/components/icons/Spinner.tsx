@@ -5,7 +5,7 @@ export interface SpinnerProps {
 
 export default function Spinner(props: SpinnerProps) {
   const size = props.size ?? "1.5rem";
-  const color = props.color ?? "grey";
+  const color = props.color ?? "var(--fg-color)";
 
   return (
     <svg
