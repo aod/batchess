@@ -32,21 +32,21 @@ function assignPiecesFor(
   board: Readonly<Board>
 ): Board {
   const fileSqNotationCreator = (r: Rank) => (f: File) => squareNotation(f, r);
-  const rankRow = fileSqNotationCreator(player === "white" ? 1 : 8);
+  const firstRow = fileSqNotationCreator(player === "white" ? 1 : 8);
   const secondRow = fileSqNotationCreator(player === "white" ? 2 : 7);
 
   const pieceCreator = (kind: PieceKind) =>
     createPiece(kind, player === "white");
 
   return Object.assign(board, {
-    [rankRow("a")]: pieceCreator(PieceKind.Rook),
-    [rankRow("b")]: pieceCreator(PieceKind.Knight),
-    [rankRow("c")]: pieceCreator(PieceKind.Bishop),
-    [rankRow("d")]: pieceCreator(PieceKind.Queen),
-    [rankRow("e")]: pieceCreator(PieceKind.King),
-    [rankRow("f")]: pieceCreator(PieceKind.Bishop),
-    [rankRow("g")]: pieceCreator(PieceKind.Knight),
-    [rankRow("h")]: pieceCreator(PieceKind.Rook),
+    [firstRow("a")]: pieceCreator(PieceKind.Rook),
+    [firstRow("b")]: pieceCreator(PieceKind.Knight),
+    [firstRow("c")]: pieceCreator(PieceKind.Bishop),
+    [firstRow("d")]: pieceCreator(PieceKind.Queen),
+    [firstRow("e")]: pieceCreator(PieceKind.King),
+    [firstRow("f")]: pieceCreator(PieceKind.Bishop),
+    [firstRow("g")]: pieceCreator(PieceKind.Knight),
+    [firstRow("h")]: pieceCreator(PieceKind.Rook),
 
     [secondRow("a")]: pieceCreator(PieceKind.Pawn),
     [secondRow("b")]: pieceCreator(PieceKind.Pawn),

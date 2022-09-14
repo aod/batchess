@@ -24,7 +24,7 @@ export interface FENData {
   fullMoves: number;
 }
 
-export function displayFEN(fen: FENData) {
+export function displayFEN(fen: Readonly<FENData>) {
   return [
     displayPiecePlacement(fen),
     displayCurrentTurn(fen),
@@ -47,7 +47,9 @@ export function displayPiecePlacement({ piecePlacement }: Readonly<FENData>) {
     .join("/");
 }
 
-export function displayCurrentTurn({ isCurrentTurnWhite }: FENData): string {
+export function displayCurrentTurn({
+  isCurrentTurnWhite,
+}: Readonly<FENData>): string {
   return isCurrentTurnWhite ? "w" : "b";
 }
 
@@ -68,19 +70,21 @@ export function displayCastlingAvailability({
   return result;
 }
 
-export function displayEnPassantSquare({ enPassantSquare }: FENData): string {
+export function displayEnPassantSquare({
+  enPassantSquare,
+}: Readonly<FENData>): string {
   return enPassantSquare ?? "-";
 }
 
-export function displayHalfMoves({ halfMoves }: FENData): string {
+export function displayHalfMoves({ halfMoves }: Readonly<FENData>): string {
   return "" + halfMoves;
 }
 
-export function displayFullmoves({ fullMoves }: FENData): string {
+export function displayFullmoves({ fullMoves }: Readonly<FENData>): string {
   return "" + fullMoves;
 }
 
-export function displayPieceType(piece: Piece): string {
+export function displayPieceType(piece: Readonly<Piece>): string {
   const notation = pieceNotation(piece.kind);
   if (notation && !piece.isWhite) return notation.toLowerCase();
   if (!notation) return piece.isWhite ? "P" : "p";
