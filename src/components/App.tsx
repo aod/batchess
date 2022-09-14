@@ -6,6 +6,7 @@ import styles from "./App.module.css";
 
 import TBoard, { boardFEN, initBoard } from "../lib/Board";
 import { SquareNotation } from "../lib/AN";
+import { LazyMotion } from "framer-motion";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();
@@ -56,11 +57,17 @@ export default function App() {
         <p className={styles.fen}>{boardFEN(board)}</p>
       </div>
       <div className={styles.game}>
-        <Board board={board} onMove={swapPieces} flipped={isFlipped} />
+        <LazyMotion strict features={loadMotionFeatures}>
+          <Board board={board} onMove={swapPieces} flipped={isFlipped} />
+        </LazyMotion>
         <Controls />
       </div>
     </div>
   );
+}
+
+async function loadMotionFeatures() {
+  return (await import("../motion-features")).default;
 }
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;

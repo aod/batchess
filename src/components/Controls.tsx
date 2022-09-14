@@ -7,7 +7,7 @@ import {
   useContext,
   useState,
 } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 import Flip from "./icons/Flip";
 
@@ -16,14 +16,14 @@ export default function Controls() {
 
   return (
     <div className={styles.controls}>
-      <motion.button
+      <m.button
         animate={{ rotateX: isFlipped ? 180 : 0 }}
         transition={{ type: "tween" }}
         onClick={flip}
         title="Flip board"
       >
         <Flip />
-      </motion.button>
+      </m.button>
     </div>
   );
 }

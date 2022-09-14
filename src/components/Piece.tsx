@@ -1,6 +1,6 @@
 import styles from "./Piece.module.css";
 import { CSSProperties, useContext, useRef, useState } from "react";
-import { motion, useDragControls } from "framer-motion";
+import { m, useDragControls } from "framer-motion";
 
 import {
   PieceMoveHandlerContext,
@@ -24,7 +24,7 @@ export default function Piece(props: PieceProps) {
   const isDragging = useRef(false);
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       animate={{ x: isReset ? 0 : undefined, y: isReset ? 0 : undefined }}
       className={styles.piece}
