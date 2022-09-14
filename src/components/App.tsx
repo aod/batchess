@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import fen from "../fen";
 import { Board as TBoard, initBoard, Position } from "../lib";
 import Board from "./Board";
 import Controls, { useControls } from "./Controls";
+import styles from "./App.module.css";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();
@@ -47,9 +49,14 @@ export default function App() {
   }, [history, setHistory, pointer, setPointer]);
 
   return (
-    <div id="app">
-      <Board board={board} onMove={swapPieces} flipped={isFlipped} />
-      <Controls />
+    <div id="app" className={styles.app}>
+      <div>
+        <p className={styles.fen}>{fen(board)}</p>
+      </div>
+      <div className={styles.game}>
+        <Board board={board} onMove={swapPieces} flipped={isFlipped} />
+        <Controls />
+      </div>
     </div>
   );
 }

@@ -14,3 +14,9 @@
 .controls button:hover {
   cursor: pointer;
 }
+
+@media (max-width: 767px) {
+  .controls {
+    padding: 0 0.25rem;
+  }
+}

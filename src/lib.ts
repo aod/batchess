@@ -56,7 +56,7 @@ function createEmptyBoard(): Board {
   }, {} as Board);
 }
 
-function createPiece(kind: PieceKind, player: Player): Piece {
+export function createPiece(kind: PieceKind, player: Player): Piece {
   return { kind, isBlack: player === "black" };
 }
 
