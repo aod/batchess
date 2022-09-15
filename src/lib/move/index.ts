@@ -1,7 +1,8 @@
 import { pieceNotation } from "../AN/Piece";
 import { extractSquareNotation, SquareNotation } from "../AN/Square";
-import Board, { initBoard, isKingChecked } from "../Board";
+import Board, { initBoard } from "../Board";
 import { PieceKind } from "../Piece";
+import { isKingChecked } from "./validate";
 
 export default interface Move {
   board: Readonly<Board>;

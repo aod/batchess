@@ -2,10 +2,11 @@ import Board from "./Board";
 import Controls, { useControls } from "./Controls";
 import styles from "./App.module.css";
 
-import { boardFEN } from "../lib/Board";
+import { boardFENPiecePlacements } from "../lib/Board";
 import { SquareNotation } from "../lib/AN/Square";
 import { LazyMotion } from "framer-motion";
 import { useChessStore } from "../lib/Chess";
+import { displayFEN, AvailableCastlingSide } from "../lib/FEN";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();
@@ -20,7 +21,18 @@ export default function App() {
   return (
     <div id="app" className={styles.app}>
       <div>
-        <p className={styles.fen}>{boardFEN(board)}</p>
+        <p className={styles.fen}>
+          {displayFEN({
+            piecePlacement: boardFENPiecePlacements(board),
+            castlingAvailability: {
+              white: AvailableCastlingSide.Both,
+              black: AvailableCastlingSide.Both,
+            },
+            isCurrentTurnWhite: true,
+            halfMoves: 0,
+            fullMoves: 1,
+          })}
+        </p>
       </div>
       <div className={styles.game}>
         <LazyMotion strict features={loadMotionFeatures}>

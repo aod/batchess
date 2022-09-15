@@ -71,17 +71,8 @@ export function findPiece(board: Board, piece: Piece): SquareNotation | null {
   return null;
 }
 
-export function isKingChecked(board: Board, forWhite: boolean) {
-  const KsNotation = findPiece(board, {
-    kind: PieceKind.King,
-    isWhite: forWhite,
-  })!;
-
-  return false;
-}
-
 export function boardFENPiecePlacements(board: Board): PiecePlacement {
-  let result: PiecePlacement = [];
+  let piecePlacement: PiecePlacement = [];
 
   for (let rank = 8; rank > 0; rank--) {
     let emptySquares = 0;
@@ -101,21 +92,8 @@ export function boardFENPiecePlacements(board: Board): PiecePlacement {
     }
 
     if (emptySquares !== 0) row.push(emptySquares);
-    result.push(row);
+    piecePlacement.push(row);
   }
 
-  return result;
-}
-
-export function boardFEN(board: Board) {
-  return displayFEN({
-    piecePlacement: boardFENPiecePlacements(board),
-    castlingAvailability: {
-      white: AvailableCastlingSide.Both,
-      black: AvailableCastlingSide.Both,
-    },
-    isCurrentTurnWhite: true,
-    halfMoves: 0,
-    fullMoves: 1,
-  });
+  return piecePlacement;
 }
