@@ -7,7 +7,11 @@ import Square from "./Square";
 import TBoard, { at } from "../lib/Board";
 import Rank, { Ranks } from "../lib/Rank";
 import File, { Files } from "../lib/File";
-import { flipSquareNotation, SquareNotation, squareNotation } from "../lib/AN";
+import {
+  SquareNotation,
+  flipSquareNotation,
+  squareNotation,
+} from "../lib/AN/Square";
 
 export const BoardDragConstraintRefContext = createContext<
   RefObject<HTMLDivElement>

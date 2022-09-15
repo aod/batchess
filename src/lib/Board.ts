@@ -1,13 +1,13 @@
-import { squareNotation, SquareNotation } from "./AN";
 import File, { Files } from "./File";
 import Rank, { Ranks } from "./Rank";
-import Piece, { PieceKind } from "./Piece";
+import Piece, { createPiece, PieceKind } from "./Piece";
 import {
-  CastlingSide,
+  AvailableCastlingSide,
   displayFEN,
   PiecePlacement,
   PiecePlacementRow,
 } from "./FEN";
+import { SquareNotation, squareNotation } from "./AN/Square";
 
 type Board = { [K in SquareNotation]: Piece | null };
 export default Board;
@@ -21,10 +21,6 @@ function createEmptyBoard(): Board {
     for (const rank of Ranks) acc[squareNotation(file, rank)] = null;
     return acc;
   }, {} as Board);
-}
-
-export function createPiece(kind: PieceKind, isWhite?: boolean): Piece {
-  return { kind, isWhite: isWhite ?? false };
 }
 
 function assignPiecesFor(
@@ -66,6 +62,24 @@ export function initBoard(): Board {
   return board;
 }
 
+export function findPiece(board: Board, piece: Piece): SquareNotation | null {
+  for (const [sNotation, bPiece] of Object.entries(board)) {
+    if (bPiece?.kind === piece.kind && bPiece?.isWhite === piece.isWhite) {
+      return sNotation as SquareNotation;
+    }
+  }
+  return null;
+}
+
+export function isKingChecked(board: Board, forWhite: boolean) {
+  const KsNotation = findPiece(board, {
+    kind: PieceKind.King,
+    isWhite: forWhite,
+  })!;
+
+  return false;
+}
+
 export function boardFENPiecePlacements(board: Board): PiecePlacement {
   let result: PiecePlacement = [];
 
@@ -97,8 +111,8 @@ export function boardFEN(board: Board) {
   return displayFEN({
     piecePlacement: boardFENPiecePlacements(board),
     castlingAvailability: {
-      white: CastlingSide.Both,
-      black: CastlingSide.Both,
+      white: AvailableCastlingSide.Both,
+      black: AvailableCastlingSide.Both,
     },
     isCurrentTurnWhite: true,
     halfMoves: 0,

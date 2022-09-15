@@ -7,7 +7,11 @@ export enum PieceKind {
   Pawn,
 }
 
-type Piece =
-  | { isWhite: false; kind: PieceKind }
-  | { isWhite: true; kind: PieceKind };
-export default Piece;
+export default interface Piece {
+  kind: PieceKind;
+  isWhite: boolean;
+}
+
+export function createPiece(kind: PieceKind, isWhite: boolean): Piece {
+  return { kind, isWhite };
+}
