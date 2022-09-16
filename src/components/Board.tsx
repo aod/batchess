@@ -120,6 +120,17 @@ export default function Board(props: BoardProps) {
     return { x: xIndex, y: yIndex };
   }
 
+  function hitsPiece(sn: SquareNotation): boolean {
+    if (!currPieceStartIdx) return false;
+    const _s = xyToPosition(currPieceStartIdx);
+    const s = props.flipped ? flipSNotation(_s) : _s;
+    const piece = props.board[s];
+    if (!piece) return false;
+    const target = props.board[props.flipped ? flipSNotation(sn) : sn];
+    if (!target) return false;
+    return target.isWhite !== piece.isWhite;
+  }
+
   const ranks = props.flipped ? Ranks.slice() : Ranks.slice().reverse();
   const files = props.flipped ? Files.slice().reverse() : Files.slice();
 
@@ -153,11 +164,16 @@ export default function Board(props: BoardProps) {
           <circle
             cx={squareSize() / 2}
             cy={squareSize() / 2}
-            r={squareSize() / 7}
-            fill="var(--circle-move-hint-color)"
+            r={hitsPiece(square) ? squareSize() : squareSize() / 7}
+            fill={hitsPiece(square) ? "none" : "var(--circle-move-hint-color)"}
+            stroke={
+              hitsPiece(square) ? "var(--circle-move-hint-color)" : "none"
+            }
+            strokeWidth={squareSize() * 0.95}
           />
         </svg>
       ))}
+
       {currPieceIdx && (
         <div
           style={{

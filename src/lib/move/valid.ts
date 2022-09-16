@@ -19,11 +19,13 @@ export function* simValidMoves(
       for (const s of squares) {
         if (board[s] !== null) {
           // TODO: Refactor
+          if (board[s]?.isWhite !== piece.isWhite) {
+            yield s;
+          }
           if ([PieceKind.King, PieceKind.Knight].includes(piece.kind)) {
             continue;
-          } else {
-            break;
           }
+          break;
         }
 
         yield s;
