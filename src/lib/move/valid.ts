@@ -1,4 +1,4 @@
-import { SquareNotation } from "../AN/Square";
+import { flipSNotation, SquareNotation } from "../AN/Square";
 import Board, { initBoard } from "../Board";
 import Piece, { PieceKind } from "../Piece";
 import { PieceMovements } from "./Piece";
@@ -15,7 +15,7 @@ export function* simValidMoves(
   );
 
   for (const resolver of moveResolvers) {
-    for (const squares of resolver(from, false)) {
+    for (const squares of resolver(from, piece.isWhite, false)) {
       for (const s of squares) {
         if (board[s] !== null) {
           // TODO: Refactor

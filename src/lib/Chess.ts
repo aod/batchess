@@ -1,11 +1,12 @@
 import { useSyncExternalStore } from "react";
-import { SquareNotation } from "./AN/Square";
+import { flipSNotation, SquareNotation } from "./AN/Square";
 import Board, { initBoard } from "./Board";
 import { simValidMoves } from "./move/valid";
 
 export interface ChessState {
   board: Board;
   isCurrentTurnWhite: boolean;
+  isFlipped: boolean;
 }
 
 export interface ExternalStore<T> {
@@ -15,12 +16,14 @@ export interface ExternalStore<T> {
 
 export interface ChessStore extends ExternalStore<ChessState> {
   playMove(a: SquareNotation, b: SquareNotation): boolean;
+  setIsFlipped(isFlipped: boolean): void;
 }
 
 export function initialChessState(): ChessState {
   return {
     board: initBoard(),
     isCurrentTurnWhite: false,
+    isFlipped: false,
   };
 }
 
@@ -46,8 +49,8 @@ export function createChessStore(state: ChessState): ChessStore {
     playMove(a, b) {
       const piece = state.board[a];
       if (!piece) return false;
-
       const validMoves = [...simValidMoves(piece, a, state.board)];
+
       if (!validMoves.includes(b)) return false;
 
       state.board[b] = state.board[a];
@@ -56,6 +59,11 @@ export function createChessStore(state: ChessState): ChessStore {
 
       notify();
       return true;
+    },
+
+    setIsFlipped(isFlipped) {
+      state.isFlipped = isFlipped;
+      notify();
     },
   };
 }
@@ -69,3 +77,4 @@ export function useChessStore<T>(selector: (state: ChessState) => T) {
 }
 
 export const selectBoard = (state: ChessState) => state.board;
+export const selectIsFlipped = (state: ChessState) => state.isFlipped;

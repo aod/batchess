@@ -1,25 +1,24 @@
 import { extractSNotation, squareNotation, SquareNotation } from "../AN/Square";
 import { PieceMoveType } from "./Piece";
 import {
-  diags,
   diagsBL,
   diagsBR,
   diagsTL,
   diagsTR,
-  horiz,
   horizL,
   horizR,
-  vert,
   vertB,
   vertT,
 } from "./squares";
 
 export type PieceMoveGeneratorFn = (
-  square: SquareNotation
+  square: SquareNotation,
+  isWhite?: boolean
 ) => Generator<SquareNotation[]>;
 
 export type PieceMoveGeneratorPawnFn = (
   square: SquareNotation,
+  isWhite?: boolean,
   hasMoved?: boolean
 ) => Generator<SquareNotation[]>;
 
@@ -42,9 +41,9 @@ export const PieveMovKindResolver: Readonly<PieceMovesGenerators> = {
       maybeNext(horizL(square))
     );
   },
-  [PieceMoveType.Pawn]: function* (square, hasMoved) {
-    const vt = vertT(square);
-    yield* collect(maybeNext(vt), hasMoved ? none() : maybeNext(vt));
+  [PieceMoveType.Pawn]: function* (square, isWhite, hasMoved) {
+    const vert = isWhite ? vertT(square) : vertB(square);
+    yield* collect(maybeNext(vert), hasMoved ? none() : maybeNext(vert));
   },
   [PieceMoveType.Knight]: function* (square) {
     yield* collect(
@@ -119,7 +118,7 @@ if (import.meta.vitest) {
   const { it, expect } = import.meta.vitest;
 
   it("should pass", () => {
-    const tor = PieveMovKindResolver[PieceMoveType.Pawn]("b2", false);
+    const tor = PieveMovKindResolver[PieceMoveType.Pawn]("b2", true, false);
     const actual = [...tor];
     const expected = [["b3", "b4"]];
     expect(actual.sort()).toStrictEqual(expected.sort());

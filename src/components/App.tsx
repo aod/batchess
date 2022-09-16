@@ -1,44 +1,47 @@
-import Board from "./Board";
-import Controls, { useControls } from "./Controls";
 import styles from "./App.module.css";
-
-import { boardFENPiecePlacements } from "../lib/Board";
-import { SquareNotation } from "../lib/AN/Square";
 import { LazyMotion } from "framer-motion";
-import { chessStore, selectBoard, useChessStore } from "../lib/Chess";
-import { displayFEN, AvailableCastlingSide } from "../lib/FEN";
+
+import Board from "./Board";
+import Controls from "./Controls";
+
+import { SquareNotation } from "../lib/AN/Square";
+import {
+  chessStore,
+  selectBoard,
+  selectIsFlipped,
+  useChessStore,
+} from "../lib/Chess";
+import { simValidMoves } from "../lib/move/valid";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();
 
-  const { isFlipped } = useControls();
   const board = useChessStore(selectBoard);
+  const isFlipped = useChessStore(selectIsFlipped);
 
-  function swapPieces(s1: SquareNotation, s2: SquareNotation) {
+  const swapPieces = (s1: SquareNotation, s2: SquareNotation) => {
     if (chessStore.playMove(s1, s2)) {
       playMoveSfx();
     }
-  }
+  };
+
+  const possibleMoveSquares = (s: SquareNotation) => {
+    const piece = board[s];
+    if (!piece) return [];
+    const moves = [...simValidMoves(piece, s, board)];
+    return moves;
+  };
 
   return (
     <div id="app" className={styles.app}>
-      <div>
-        <p className={styles.fen}>
-          {displayFEN({
-            piecePlacement: boardFENPiecePlacements(board),
-            castlingAvailability: {
-              white: AvailableCastlingSide.Both,
-              black: AvailableCastlingSide.Both,
-            },
-            isCurrentTurnWhite: true,
-            halfMoves: 0,
-            fullMoves: 1,
-          })}
-        </p>
-      </div>
       <div className={styles.game}>
         <LazyMotion strict features={loadMotionFeatures}>
-          <Board board={board} onMove={swapPieces} flipped={isFlipped} />
+          <Board
+            board={board}
+            onMove={swapPieces}
+            flipped={isFlipped}
+            possibleMoveSquares={possibleMoveSquares}
+          />
           <Controls />
         </LazyMotion>
       </div>

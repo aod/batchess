@@ -1,12 +1,5 @@
 import styles from "./Board.module.css";
-import {
-  createContext,
-  RefObject,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, RefObject, useEffect, useRef, useState } from "react";
 
 import Piece from "./Piece";
 import Square from "./Square";
@@ -20,7 +13,6 @@ import {
   squareNotation,
   extractSNotation,
 } from "../lib/AN/Square";
-import { simValidMoves } from "../lib/move/valid";
 
 export const BoardDragConstraintRefContext = createContext<
   RefObject<HTMLDivElement>
@@ -44,12 +36,16 @@ export interface BoardProps {
   board: TBoard;
   onMove?: (from: SquareNotation, to: SquareNotation) => void;
   flipped?: boolean;
+  possibleMoveSquares: (square: SquareNotation) => SquareNotation[];
 }
 
 export default function Board(props: BoardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [currPieceStartIdx, setCurrPieceStartIdx] = useState<XY | null>(null);
   const [currPieceIdx, setCurrPieceIdx] = useState<XY | null>(null);
+  const [possibleMoveSquares, setPossibleMoveSquares] = useState<
+    SquareNotation[]
+  >([]);
 
   useEffect(() => {
     function onBlur() {
@@ -62,20 +58,22 @@ export default function Board(props: BoardProps) {
 
   const onPieceMove: CoordSetter = (xy) => {
     const idx = pieceXYToIdxs(xy);
-    if (!currPieceStartIdx) setCurrPieceStartIdx(idx);
+
+    if (!currPieceStartIdx) {
+      setCurrPieceStartIdx(idx);
+      const _s = xyToPosition(idx);
+      const s = props.flipped ? flipSNotation(_s) : _s;
+      setPossibleMoveSquares(
+        props
+          .possibleMoveSquares(s)
+          .map((s) => (props.flipped ? flipSNotation(s) : s))
+      );
+    }
+
     if (currPieceIdx?.x !== idx.x || currPieceIdx?.y !== idx.y) {
       setCurrPieceIdx(idx);
     }
   };
-
-  const possibleMoveSquares: SquareNotation[] = useMemo(() => {
-    if (currPieceStartIdx === null) return [];
-    const pos = xyToPosition(currPieceStartIdx);
-    const piece = props.board[pos];
-    if (!piece) return [];
-    const result = [...simValidMoves(piece, pos, props.board)];
-    return result;
-  }, [currPieceStartIdx]);
 
   function play() {
     if (!currPieceStartIdx || !currPieceIdx) return;
@@ -94,6 +92,7 @@ export default function Board(props: BoardProps) {
   function reset() {
     setCurrPieceStartIdx(null);
     setCurrPieceIdx(null);
+    setPossibleMoveSquares([]);
   }
 
   function squareSize() {

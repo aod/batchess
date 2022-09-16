@@ -6,20 +6,17 @@ import ReactDOM from "react-dom/client";
 import App from "./components/App";
 import Spinner from "./components/icons/Spinner";
 import Centered from "./components/Centered";
-import { ControlsContextProvider } from "./components/Controls";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ControlsContextProvider>
-      <Suspense
-        fallback={
-          <Centered>
-            <Spinner />
-          </Centered>
-        }
-      >
-        <App />
-      </Suspense>
-    </ControlsContextProvider>
+    <Suspense
+      fallback={
+        <Centered>
+          <Spinner />
+        </Centered>
+      }
+    >
+      <App />
+    </Suspense>
   </React.StrictMode>
 );
