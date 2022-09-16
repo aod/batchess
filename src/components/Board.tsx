@@ -1,5 +1,12 @@
 import styles from "./Board.module.css";
-import { createContext, RefObject, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  RefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import Piece from "./Piece";
 import Square from "./Square";
@@ -11,7 +18,9 @@ import {
   SquareNotation,
   flipSNotation,
   squareNotation,
+  extractSNotation,
 } from "../lib/AN/Square";
+import { simValidMoves } from "../lib/move/valid";
 
 export const BoardDragConstraintRefContext = createContext<
   RefObject<HTMLDivElement>
@@ -58,6 +67,15 @@ export default function Board(props: BoardProps) {
       setCurrPieceIdx(idx);
     }
   };
+
+  const possibleMoveSquares: SquareNotation[] = useMemo(() => {
+    if (currPieceStartIdx === null) return [];
+    const pos = xyToPosition(currPieceStartIdx);
+    const piece = props.board[pos];
+    if (!piece) return [];
+    const result = [...simValidMoves(piece, pos, props.board)];
+    return result;
+  }, [currPieceStartIdx]);
 
   function play() {
     if (!currPieceStartIdx || !currPieceIdx) return;
@@ -116,11 +134,31 @@ export default function Board(props: BoardProps) {
             top: currPieceStartIdx.y * squareSize(),
             width: squareSize(),
             height: squareSize(),
-            backgroundColor: "#e0d33e",
+            backgroundColor: "var(--square-move-start-color)",
             opacity: 0.8,
           }}
         ></div>
       )}
+
+      {possibleMoveSquares.map((square, i) => (
+        <svg
+          key={i}
+          style={{
+            position: "absolute",
+            left: sNotationToIdx(square).x * squareSize(),
+            top: sNotationToIdx(square).y * squareSize(),
+          }}
+          width={squareSize()}
+          height={squareSize()}
+        >
+          <circle
+            cx={squareSize() / 2}
+            cy={squareSize() / 2}
+            r={squareSize() / 7}
+            fill="var(--circle-move-hint-color)"
+          />
+        </svg>
+      ))}
       {currPieceIdx && (
         <div
           style={{
@@ -161,4 +199,12 @@ function xyToPosition({ x, y }: XY) {
   const rank = 8 - y;
   const file = String.fromCharCode(97 + x);
   return squareNotation(file as File, rank as Rank);
+}
+
+function sNotationToIdx(notation: SquareNotation): XY {
+  const [file, rank] = extractSNotation(notation);
+  return {
+    y: 8 - rank,
+    x: file.charCodeAt(0) - 97,
+  };
 }

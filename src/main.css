@@ -4,6 +4,8 @@
   --piece-size: calc(var(--board-size) / 8);
   --light-square-color: #ffce9e;
   --dark-square-color: #d18b47;
+  --square-move-start-color: #e0d33e;
+  --circle-move-hint-color: #ccc149;
 }
 
 #root {

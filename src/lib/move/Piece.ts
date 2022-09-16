@@ -9,24 +9,25 @@ export enum PieceMoveType {
   King,
 }
 
-export default interface PieceMover {
-  moves: Set<PieceMoveType>;
+export default interface PieceMovement {
+  type: PieceMoveType[];
 }
 
-export const PieceMovements: Readonly<Record<PieceKind, Readonly<PieceMover>>> =
-  {
-    [PieceKind.King]: { moves: new Set([PieceMoveType.King]) },
-    [PieceKind.Queen]: {
-      moves: new Set([
-        PieceMoveType.Horizontal,
-        PieceMoveType.Vertical,
-        PieceMoveType.Diagonal,
-      ]),
-    },
-    [PieceKind.Bishop]: { moves: new Set([PieceMoveType.Diagonal]) },
-    [PieceKind.Knight]: { moves: new Set([PieceMoveType.Knight]) },
-    [PieceKind.Rook]: {
-      moves: new Set([PieceMoveType.Horizontal, PieceMoveType.Vertical]),
-    },
-    [PieceKind.Pawn]: { moves: new Set([PieceMoveType.Pawn]) },
-  };
+export const PieceMovements: Readonly<
+  Record<PieceKind, Readonly<PieceMovement>>
+> = {
+  [PieceKind.King]: { type: [PieceMoveType.King] },
+  [PieceKind.Queen]: {
+    type: [
+      PieceMoveType.Horizontal,
+      PieceMoveType.Vertical,
+      PieceMoveType.Diagonal,
+    ],
+  },
+  [PieceKind.Bishop]: { type: [PieceMoveType.Diagonal] },
+  [PieceKind.Knight]: { type: [PieceMoveType.Knight] },
+  [PieceKind.Rook]: {
+    type: [PieceMoveType.Horizontal, PieceMoveType.Vertical],
+  },
+  [PieceKind.Pawn]: { type: [PieceMoveType.Pawn] },
+};

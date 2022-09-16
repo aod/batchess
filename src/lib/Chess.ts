@@ -1,15 +1,20 @@
 import { useSyncExternalStore } from "react";
+import { SquareNotation } from "./AN/Square";
 import Board, { initBoard } from "./Board";
+import { simValidMoves } from "./move/valid";
 
 export interface ChessState {
   board: Board;
   isCurrentTurnWhite: boolean;
 }
 
-export interface ChessStore {
-  getState(): ChessState;
+export interface ExternalStore<T> {
+  getState(): T;
   subscribe(cb: () => void): () => void;
-  playMove(move: string): void;
+}
+
+export interface ChessStore extends ExternalStore<ChessState> {
+  playMove(a: SquareNotation, b: SquareNotation): boolean;
 }
 
 export function initialChessState(): ChessState {
@@ -20,27 +25,47 @@ export function initialChessState(): ChessState {
 }
 
 export function createChessStore(state: ChessState): ChessStore {
-  const listeners = new Set();
+  const listeners = new Set<() => void>();
+
+  function notify() {
+    for (const listener of listeners) {
+      listener();
+    }
+  }
 
   return {
     getState() {
       return state;
     },
+
     subscribe(listener) {
       listeners.add(listener);
       return () => listeners.delete(listener);
     },
 
-    playMove(mNotation) {
+    playMove(a, b) {
+      const piece = state.board[a];
+      if (!piece) return false;
+
+      const validMoves = [...simValidMoves(piece, a, state.board)];
+      if (!validMoves.includes(b)) return false;
+
+      state.board[b] = state.board[a];
+      state.board[a] = null;
       state.isCurrentTurnWhite = !state.isCurrentTurnWhite;
-      // const [piece, sNotation, isCapture] = extractMoveNotation(move);
+
+      notify();
+      return true;
     },
   };
 }
 
 export const chessStore = createChessStore(initialChessState());
+
 export function useChessStore<T>(selector: (state: ChessState) => T) {
   return useSyncExternalStore(chessStore.subscribe, () =>
     selector(chessStore.getState())
   );
 }
+
+export const selectBoard = (state: ChessState) => state.board;

@@ -16,12 +16,12 @@ import {
 
 export type PieceMoveGeneratorFn = (
   square: SquareNotation
-) => Generator<SquareNotation>;
+) => Generator<SquareNotation[]>;
 
 export type PieceMoveGeneratorPawnFn = (
   square: SquareNotation,
   hasMoved?: boolean
-) => Generator<SquareNotation>;
+) => Generator<SquareNotation[]>;
 
 export type PieceMovesGenerators = {
   [K in PieceMoveType]: K extends PieceMoveType.Pawn
@@ -31,42 +31,58 @@ export type PieceMovesGenerators = {
 
 export const PieveMovKindResolver: Readonly<PieceMovesGenerators> = {
   [PieceMoveType.King]: function* (square) {
-    yield* maybeNext(diagsTL(square));
-    yield* maybeNext(vertT(square));
-    yield* maybeNext(diagsTR(square));
-    yield* maybeNext(horizR(square));
-    yield* maybeNext(diagsBR(square));
-    yield* maybeNext(vertB(square));
-    yield* maybeNext(diagsBL(square));
-    yield* maybeNext(horizL(square));
+    yield* collect(
+      maybeNext(diagsTL(square)),
+      maybeNext(vertT(square)),
+      maybeNext(diagsTR(square)),
+      maybeNext(horizR(square)),
+      maybeNext(diagsBR(square)),
+      maybeNext(vertB(square)),
+      maybeNext(diagsBL(square)),
+      maybeNext(horizL(square))
+    );
   },
   [PieceMoveType.Pawn]: function* (square, hasMoved) {
     const vt = vertT(square);
-    yield* maybeNext(vt);
-    if (!hasMoved) yield* maybeNext(vt);
-    yield* maybeNext(diagsTL(square));
-    yield* maybeNext(diagsTR(square));
+    yield* collect(maybeNext(vt), hasMoved ? none() : maybeNext(vt));
   },
   [PieceMoveType.Knight]: function* (square) {
-    yield* ifMoveable(square, 2, 1);
-    yield* ifMoveable(square, 2, -1);
-    yield* ifMoveable(square, -2, -1);
-    yield* ifMoveable(square, -2, 1);
-    yield* ifMoveable(square, -1, 2);
-    yield* ifMoveable(square, 1, 2);
-    yield* ifMoveable(square, -1, -2);
-    yield* ifMoveable(square, 1, -2);
+    yield* collect(
+      ifMoveable(square, 2, 1),
+      ifMoveable(square, 2, -1),
+      ifMoveable(square, -2, -1),
+      ifMoveable(square, -2, 1),
+      ifMoveable(square, -1, 2),
+      ifMoveable(square, 1, 2),
+      ifMoveable(square, -1, -2),
+      ifMoveable(square, 1, -2)
+    );
   },
   [PieceMoveType.Horizontal]: function* (square) {
-    yield* horiz(square);
+    yield* collect(horizR(square));
+    yield* collect(horizL(square));
   },
   [PieceMoveType.Vertical]: function* (square) {
-    yield* vert(square);
+    yield* collect(vertT(square));
+    yield* collect(vertB(square));
   },
   [PieceMoveType.Diagonal]: function* (square) {
-    yield* diags(square);
+    yield* collect(diagsTL(square));
+    yield* collect(diagsTR(square));
+    yield* collect(diagsBR(square));
+    yield* collect(diagsBL(square));
   },
 };
+
+function* collect<T>(...grators: Generator<T>[]) {
+  const result = [];
+  for (const grator of grators) {
+    result.push(...grator);
+  }
+  if (result.length) yield result;
+}
+
+function* none() {}
 
 function* maybeNext<T>(it: Iterator<T>) {
   const current = it.next();
@@ -77,19 +93,6 @@ function skip<T>(it: Iterator<T>, n = 1) {
   for (let i = 0; i < n; i++) it.next();
   return it;
 }
-
-function* both<T, U, V>(a: Iterator<T>, b: Iterator<U>, fn: (a: T, b: U) => V) {
-  const [curA, curB] = [a.next(), b.next()];
-  if (!curA.done && !curB.done) yield fn(curA.value, curB.value);
-}
-
-// function* map<T, U>(it: Iterator<T>, fn: (res: T) => U) {
-//   const current = it.next();
-//   if (!current.done) {
-//     const ret = fn(current.value);
-//     if (ret) yield ret;
-//   }
-// }
 
 function* ifMoveable(
   start: SquareNotation,
@@ -118,21 +121,34 @@ if (import.meta.vitest) {
   it("should pass", () => {
     const tor = PieveMovKindResolver[PieceMoveType.Pawn]("b2", false);
     const actual = [...tor];
-    const expected = ["a3", "b3", "b4", "c3"];
+    const expected = [["b3", "b4"]];
     expect(actual.sort()).toStrictEqual(expected.sort());
   });
 
   it("should give correct square moves for move type knight f3", () => {
     const tor = PieveMovKindResolver[PieceMoveType.Knight]("f3");
     const actual = [...tor];
-    const expected = ["h2", "h4", "d2", "d4", "e5", "g5", "g1", "e1"];
-    expect(actual.sort()).toStrictEqual(expected.sort());
+    const expected = [
+      ["h2", "h4", "d2", "d4", "e5", "g5", "g1", "e1"].sort(),
+    ].sort();
+    expect(actual.map((xs) => xs.sort()).sort()).toStrictEqual(expected);
   });
 
   it("should give correct square moves for move type knight h8", () => {
     const tor = PieveMovKindResolver[PieceMoveType.Knight]("h8");
     const actual = [...tor];
-    const expected = ["g6", "f7"];
-    expect(actual.sort()).toStrictEqual(expected.sort());
+    const expected = [["g6", "f7"].sort()].sort();
+    expect(actual.map((xs) => xs.sort()).sort()).toStrictEqual(expected);
+  });
+
+  it("should give correct square moves for move type vertical diagonal", () => {
+    const tor = PieveMovKindResolver[PieceMoveType.Diagonal]("d1");
+    const actual = [...tor];
+    const expected = [
+      ["c2", "b3", "a4"].sort(),
+      ["e2", "f3", "g4", "h5"].sort(),
+    ].sort();
+
+    expect(actual.map((xs) => xs.sort()).sort()).toStrictEqual(expected);
   });
 }

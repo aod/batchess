@@ -5,17 +5,19 @@ import styles from "./App.module.css";
 import { boardFENPiecePlacements } from "../lib/Board";
 import { SquareNotation } from "../lib/AN/Square";
 import { LazyMotion } from "framer-motion";
-import { useChessStore } from "../lib/Chess";
+import { chessStore, selectBoard, useChessStore } from "../lib/Chess";
 import { displayFEN, AvailableCastlingSide } from "../lib/FEN";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();
 
   const { isFlipped } = useControls();
-  const board = useChessStore((state) => state.board);
+  const board = useChessStore(selectBoard);
 
-  function swapPieces(pos1: SquareNotation, pos2: SquareNotation) {
-    playMoveSfx();
+  function swapPieces(s1: SquareNotation, s2: SquareNotation) {
+    if (chessStore.playMove(s1, s2)) {
+      playMoveSfx();
+    }
   }
 
   return (
