@@ -1,8 +1,4 @@
-import {
-  SquareNotation,
-  extractSquareNotation,
-  squareNotation,
-} from "../AN/Square";
+import { SquareNotation, extractSNotation, squareNotation } from "../AN/Square";
 import Rank from "../Rank";
 import File from "../File";
 import { nxtChr } from "../../util";
@@ -31,7 +27,7 @@ export function* diags(
 export function* horizR(
   from: Readonly<SquareNotation>
 ): Generator<SquareNotation> {
-  const [f, r] = extractSquareNotation(from);
+  const [f, r] = extractSNotation(from);
   for (let i = nxtChr(f); i <= "h"; i = nxtChr(i)) {
     yield squareNotation(i as File, r);
   }
@@ -40,7 +36,7 @@ export function* horizR(
 export function* horizL(
   from: Readonly<SquareNotation>
 ): Generator<SquareNotation> {
-  const [f, r] = extractSquareNotation(from);
+  const [f, r] = extractSNotation(from);
   for (let i = nxtChr(f, -1); i >= "a"; i = nxtChr(i, -1)) {
     yield squareNotation(i as File, r);
   }
@@ -49,7 +45,7 @@ export function* horizL(
 export function* vertT(
   from: Readonly<SquareNotation>
 ): Generator<SquareNotation> {
-  const [f, r] = extractSquareNotation(from);
+  const [f, r] = extractSNotation(from);
   for (let i = r + 1; i <= 8; i++) {
     yield squareNotation(f, i as Rank);
   }
@@ -58,7 +54,7 @@ export function* vertT(
 export function* vertB(
   from: Readonly<SquareNotation>
 ): Generator<SquareNotation> {
-  const [f, r] = extractSquareNotation(from);
+  const [f, r] = extractSNotation(from);
   for (let i = r - 1; i >= 1; i--) {
     yield squareNotation(f, i as Rank);
   }
@@ -71,8 +67,8 @@ export function* diagsTL(
   for (const vt of vertT(from)) {
     const hl = hlIt.next();
     if (hl.done) break;
-    const [, rvt] = extractSquareNotation(vt);
-    const [fhl] = extractSquareNotation(hl.value);
+    const [, rvt] = extractSNotation(vt);
+    const [fhl] = extractSNotation(hl.value);
     yield squareNotation(fhl, rvt);
   }
 }
@@ -84,8 +80,8 @@ export function* diagsTR(
   for (const vt of vertT(from)) {
     const hr = hrIt.next();
     if (hr.done) break;
-    const [, rvt] = extractSquareNotation(vt);
-    const [fhl] = extractSquareNotation(hr.value);
+    const [, rvt] = extractSNotation(vt);
+    const [fhl] = extractSNotation(hr.value);
     yield squareNotation(fhl, rvt);
   }
 }
@@ -97,8 +93,8 @@ export function* diagsBL(
   for (const vb of vertB(from)) {
     const hl = hlIt.next();
     if (hl.done) break;
-    const [, rvt] = extractSquareNotation(vb);
-    const [fhl] = extractSquareNotation(hl.value);
+    const [, rvt] = extractSNotation(vb);
+    const [fhl] = extractSNotation(hl.value);
     yield squareNotation(fhl, rvt);
   }
 }
@@ -110,8 +106,8 @@ export function* diagsBR(
   for (const vb of vertB(from)) {
     const hr = hrIt.next();
     if (hr.done) break;
-    const [, rvt] = extractSquareNotation(vb);
-    const [fhl] = extractSquareNotation(hr.value);
+    const [, rvt] = extractSNotation(vb);
+    const [fhl] = extractSNotation(hr.value);
     yield squareNotation(fhl, rvt);
   }
 }

@@ -10,7 +10,7 @@ export function squareNotation(
   return `${file}${rank}`;
 }
 
-export function extractSquareNotation(
+export function extractSNotation(
   sNotation: Readonly<SquareNotation>
 ): [File, Rank] {
   const file = sNotation[0] as File;
@@ -18,10 +18,10 @@ export function extractSquareNotation(
   return [file, rank];
 }
 
-export function flipSquareNotation(
+export function flipSNotation(
   sNotation: Readonly<SquareNotation>
 ): SquareNotation {
-  const [file, rank] = extractSquareNotation(sNotation);
+  const [file, rank] = extractSNotation(sNotation);
   const newFile = Files.slice().reverse()[Files.indexOf(file)];
   const newRank = Ranks.slice().reverse()[Ranks.indexOf(rank)];
   return squareNotation(newFile, newRank);

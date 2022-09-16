@@ -1,6 +1,6 @@
 import { PieceKind } from "../Piece";
 import { pieceNotation } from "./Piece";
-import { SquareNotation, extractSquareNotation } from "./Square";
+import { SquareNotation, extractSNotation } from "./Square";
 
 export enum MoveType {
   Move,
@@ -86,7 +86,7 @@ function displayMoveNotation(notation: MoveNotation): string {
     case MoveType.Capture: {
       const from =
         notation.pieceKind === PieceKind.Pawn
-          ? extractSquareNotation(notation.from)[0]
+          ? extractSNotation(notation.from)[0]
           : notation.from;
       return `${pieceNotation(notation.pieceKind)}${from}x${notation.to}`;
     }

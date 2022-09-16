@@ -9,7 +9,7 @@ import Rank, { Ranks } from "../lib/Rank";
 import File, { Files } from "../lib/File";
 import {
   SquareNotation,
-  flipSquareNotation,
+  flipSNotation,
   squareNotation,
 } from "../lib/AN/Square";
 
@@ -65,8 +65,8 @@ export default function Board(props: BoardProps) {
     let from = xyToPosition(currPieceStartIdx!);
     let to = xyToPosition(currPieceIdx!);
     if (props.flipped) {
-      from = flipSquareNotation(from);
-      to = flipSquareNotation(to);
+      from = flipSNotation(from);
+      to = flipSNotation(to);
     }
     props.onMove?.(from, to);
 

@@ -1,5 +1,5 @@
 import { pieceNotation } from "../AN/Piece";
-import { extractSquareNotation, SquareNotation } from "../AN/Square";
+import { extractSNotation, SquareNotation } from "../AN/Square";
 import Board, { initBoard } from "../Board";
 import { PieceKind } from "../Piece";
 import { isKingChecked } from "./validate";
@@ -22,7 +22,7 @@ export function notateMove(move: Move): string {
   if (isCapture) {
     notation = "x" + notation;
     if (isPawn) {
-      const [file] = extractSquareNotation(move.from);
+      const [file] = extractSNotation(move.from);
       notation = file + notation;
     } else {
       notation = pieceNotation(fromPiece.kind) + notation;
