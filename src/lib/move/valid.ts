@@ -15,7 +15,11 @@ export function* simValidMoves(
   );
 
   for (const resolver of moveResolvers) {
-    for (const squares of resolver(from, piece.isWhite, false)) {
+    for (const squares of resolver(
+      from,
+      piece.isWhite,
+      piece.kind === PieceKind.Pawn ? piece.hasMoved : false
+    )) {
       for (const s of squares) {
         if (board[s] !== null) {
           // TODO: Refactor

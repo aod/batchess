@@ -1,7 +1,8 @@
 import { useSyncExternalStore } from "react";
-import { flipSNotation, SquareNotation } from "./AN/Square";
+import { SquareNotation } from "./AN/Square";
 import Board, { initBoard } from "./Board";
 import { simValidMoves } from "./move/valid";
+import { PieceKind } from "./Piece";
 
 export interface ChessState {
   board: Board;
@@ -52,6 +53,9 @@ export function createChessStore(state: ChessState): ChessStore {
       const validMoves = [...simValidMoves(piece, a, state.board)];
 
       if (!validMoves.includes(b)) return false;
+      if (piece.kind === PieceKind.Pawn) {
+        piece.hasMoved = true;
+      }
 
       state.board[b] = state.board[a];
       state.board[a] = null;
