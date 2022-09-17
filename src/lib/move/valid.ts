@@ -1,4 +1,9 @@
-import { flipSNotation, SquareNotation } from "../AN/Square";
+import {
+  extractSNotation,
+  flipSNotation,
+  squareNotation,
+  SquareNotation,
+} from "../AN/Square";
 import Board, { initBoard } from "../Board";
 import Piece, { PieceKind } from "../Piece";
 import { PieceMovements } from "./Piece";
@@ -7,7 +12,8 @@ import { PieveMovKindResolver } from "./pieces";
 export function* simValidMoves(
   piece: Piece,
   from: SquareNotation,
-  board: Board
+  board: Board,
+  currentTurn: number
 ) {
   const pieceMovements = PieceMovements[piece.kind];
   const moveResolvers = pieceMovements.type.map(
@@ -18,21 +24,47 @@ export function* simValidMoves(
     for (const squares of resolver(
       from,
       piece.isWhite,
-      piece.kind === PieceKind.Pawn ? piece.hasMoved : false
+      piece.kind === PieceKind.Pawn
+        ? piece.firstMoveAtTurn !== undefined
+        : false
     )) {
       for (const s of squares) {
-        if (board[s] !== null) {
-          // TODO: Refactor
-          if (board[s]?.isWhite !== piece.isWhite) {
+        const boardPiece = board[s];
+
+        if (piece.kind === PieceKind.Pawn) {
+          const [fromFile, fromRank] = extractSNotation(from);
+          const [toFile] = extractSNotation(s);
+
+          const isCaptureable =
+            boardPiece !== null && boardPiece.isWhite !== piece.isWhite;
+          const otherPiece = board[squareNotation(toFile, fromRank)];
+          const isEnPassant =
+            otherPiece?.kind === PieceKind.Pawn &&
+            otherPiece.isWhite !== piece.isWhite &&
+            otherPiece.firstMoveAtTurn === currentTurn - 1 &&
+            [4, 5].includes(fromRank);
+
+          if (fromFile === toFile) {
+            if (boardPiece === null) yield s;
+          } else if (isCaptureable || isEnPassant) {
             yield s;
           }
-          if ([PieceKind.King, PieceKind.Knight].includes(piece.kind)) {
-            continue;
+        } else if (!boardPiece) {
+          yield s;
+        } else if (
+          [PieceKind.Queen, PieceKind.Bishop, PieceKind.Rook].includes(
+            piece.kind
+          )
+        ) {
+          if (boardPiece.isWhite !== piece.isWhite) {
+            yield s;
           }
           break;
+        } else if ([PieceKind.King, PieceKind.Knight].includes(piece.kind)) {
+          if (boardPiece.isWhite !== piece.isWhite) {
+            yield s;
+          }
         }
-
-        yield s;
       }
     }
   }
@@ -45,7 +77,8 @@ if (import.meta.vitest) {
     const ret = simValidMoves(
       { kind: PieceKind.Queen, isWhite: true },
       "a1",
-      initBoard()
+      initBoard(),
+      0
     );
     const actual = [...ret];
 

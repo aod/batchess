@@ -8,6 +8,7 @@ import { SquareNotation } from "../lib/AN/Square";
 import {
   chessStore,
   selectBoard,
+  selectCurrentTurn,
   selectIsFlipped,
   useChessStore,
 } from "../lib/Chess";
@@ -18,6 +19,7 @@ export default function App() {
 
   const board = useChessStore(selectBoard);
   const isFlipped = useChessStore(selectIsFlipped);
+  const currentTurn = useChessStore(selectCurrentTurn);
 
   const swapPieces = (s1: SquareNotation, s2: SquareNotation) => {
     if (chessStore.playMove(s1, s2)) {
@@ -28,7 +30,7 @@ export default function App() {
   const possibleMoveSquares = (s: SquareNotation) => {
     const piece = board[s];
     if (!piece) return [];
-    const moves = [...simValidMoves(piece, s, board)];
+    const moves = [...simValidMoves(piece, s, board, currentTurn)];
     return moves;
   };
 

@@ -43,7 +43,12 @@ export const PieveMovKindResolver: Readonly<PieceMovesGenerators> = {
   },
   [PieceMoveType.Pawn]: function* (square, isWhite, hasMoved) {
     const vert = isWhite ? vertT(square) : vertB(square);
-    yield* collect(maybeNext(vert), hasMoved ? none() : maybeNext(vert));
+    yield* collect(
+      maybeNext(vert),
+      hasMoved ? none() : maybeNext(vert),
+      ifMoveable(square, -1, isWhite ? 1 : -1),
+      ifMoveable(square, 1, isWhite ? 1 : -1)
+    );
   },
   [PieceMoveType.Knight]: function* (square) {
     yield* collect(
@@ -120,7 +125,7 @@ if (import.meta.vitest) {
   it("should pass", () => {
     const tor = PieveMovKindResolver[PieceMoveType.Pawn]("b2", true, false);
     const actual = [...tor];
-    const expected = [["b3", "b4"]];
+    const expected = [["b3", "b4", "a3", "c3"]];
     expect(actual.sort()).toStrictEqual(expected.sort());
   });
 
