@@ -55,6 +55,7 @@ export default function Piece(props: PieceProps) {
         isDragging.current = false;
         play();
       }}
+      whileDrag={{ zIndex: 1 }}
       dragConstraints={dragConstraintsRef}
       dragElastic={0.1}
       style={
