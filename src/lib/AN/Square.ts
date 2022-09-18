@@ -1,5 +1,5 @@
-import File, { Files } from "../File";
-import Rank, { Ranks } from "../Rank";
+import File, { Files } from "@/lib/File";
+import Rank, { Ranks } from "@/lib/Rank";
 
 export type SquareNotation = `${File}${Rank}`;
 

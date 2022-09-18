@@ -1,8 +1,13 @@
 import { useSyncExternalStore } from "react";
-import { extractSNotation, squareNotation, SquareNotation } from "./AN/Square";
-import Board, { initBoard } from "./Board";
-import { simValidMoves } from "./move/valid";
-import { PieceKind } from "./Piece";
+
+import {
+  extractSNotation,
+  squareNotation,
+  SquareNotation,
+} from "@/lib/AN/Square";
+import Board, { initBoard } from "@/lib/Board";
+import { simValidMoves } from "@/lib/move/valid";
+import { PieceKind } from "@/lib/Piece";
 
 export interface ChessState {
   board: Board;

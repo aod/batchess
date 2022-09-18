@@ -1,4 +1,4 @@
-import { PieceKind } from "../Piece";
+import { PieceKind } from "@/lib/Piece";
 
 export const PieceNotations = ["K", "Q", "R", "B", "N"] as const;
 export type PieceNotationPawn = "";

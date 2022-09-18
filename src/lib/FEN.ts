@@ -1,6 +1,6 @@
-import { pieceNotation } from "./AN/Piece";
-import { SquareNotation } from "./AN/Square";
-import Piece from "./Piece";
+import { pieceNotation } from "@/lib/AN/Piece";
+import { SquareNotation } from "@/lib/AN/Square";
+import Piece from "@/lib/Piece";
 
 export type PiecePlacementValue = Piece | number;
 export type PiecePlacementRow = PiecePlacementValue[];

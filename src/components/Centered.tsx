@@ -1,4 +1,4 @@
-import styles from "./Centered.module.css";
+import styles from "@/components/Centered.module.css";
 import { PropsWithChildren } from "react";
 
 export default function Centered(props: PropsWithChildren) {

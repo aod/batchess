@@ -1,13 +1,13 @@
-import styles from "./Piece.module.css";
+import styles from "@/components/Piece.module.css";
 import { CSSProperties, useContext, useRef, useState } from "react";
 import { m, useDragControls } from "framer-motion";
 
 import {
   PieceMoveHandlerContext,
   BoardDragConstraintRefContext,
-} from "./Board";
+} from "@/components/Board";
 
-import TPiece, { PieceKind } from "../lib/Piece";
+import TPiece, { PieceKind } from "@/lib/Piece";
 
 export interface PieceProps {
   piece: TPiece;

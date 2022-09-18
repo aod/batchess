@@ -1,13 +1,8 @@
-import File, { Files } from "./File";
-import Rank, { Ranks } from "./Rank";
-import Piece, { createPiece, PieceKind } from "./Piece";
-import {
-  AvailableCastlingSide,
-  displayFEN,
-  PiecePlacement,
-  PiecePlacementRow,
-} from "./FEN";
-import { SquareNotation, squareNotation } from "./AN/Square";
+import File, { Files } from "@/lib/File";
+import Rank, { Ranks } from "@/lib/Rank";
+import Piece, { createPiece, PieceKind } from "@/lib/Piece";
+import { PiecePlacement, PiecePlacementRow } from "@/lib/FEN";
+import { SquareNotation, squareNotation } from "@/lib/AN/Square";
 
 type Board = { [K in SquareNotation]: Piece | null };
 export default Board;

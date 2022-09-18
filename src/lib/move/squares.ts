@@ -1,7 +1,11 @@
-import { SquareNotation, extractSNotation, squareNotation } from "../AN/Square";
-import Rank from "../Rank";
-import File from "../File";
-import { nxtChr } from "../../util";
+import {
+  SquareNotation,
+  extractSNotation,
+  squareNotation,
+} from "@/lib/AN/Square";
+import Rank from "@/lib/Rank";
+import File from "@/lib/File";
+import { nxtChr } from "@/util";
 
 export function* horiz(from: SquareNotation): Generator<SquareNotation> {
   yield* horizR(from);

@@ -1,18 +1,18 @@
-import styles from "./Board.module.css";
+import styles from "@/components/Board.module.css";
 import { createContext, RefObject, useEffect, useRef, useState } from "react";
 
-import Piece from "./Piece";
-import Square from "./Square";
+import Piece from "@/components/Piece";
+import Square from "@/components/Square";
 
-import TBoard, { at } from "../lib/Board";
-import Rank, { Ranks } from "../lib/Rank";
-import File, { Files } from "../lib/File";
+import TBoard, { at } from "@/lib/Board";
+import Rank, { Ranks } from "@/lib/Rank";
+import File, { Files } from "@/lib/File";
 import {
   SquareNotation,
   flipSNotation,
   squareNotation,
   extractSNotation,
-} from "../lib/AN/Square";
+} from "@/lib/AN/Square";
 
 export const BoardDragConstraintRefContext = createContext<
   RefObject<HTMLDivElement>

@@ -1,4 +1,4 @@
-import { PieceKind } from "../Piece";
+import { PieceKind } from "@/lib/Piece";
 
 export enum PieceMoveType {
   Pawn,

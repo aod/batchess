@@ -1,18 +1,18 @@
-import styles from "./App.module.css";
+import styles from "@/components/App.module.css";
 import { LazyMotion } from "framer-motion";
 
-import Board from "./Board";
-import Controls from "./Controls";
+import Board from "@/components/Board";
+import Controls from "@/components/Controls";
 
-import { SquareNotation } from "../lib/AN/Square";
+import { SquareNotation } from "@/lib/AN/Square";
 import {
   chessStore,
   selectBoard,
   selectCurrentTurn,
   selectIsFlipped,
   useChessStore,
-} from "../lib/Chess";
-import { simValidMoves } from "../lib/move/valid";
+} from "@/lib/Chess";
+import { simValidMoves } from "@/lib/move/valid";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();

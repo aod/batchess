@@ -1,13 +1,12 @@
 import {
   extractSNotation,
-  flipSNotation,
   squareNotation,
   SquareNotation,
-} from "../AN/Square";
-import Board, { initBoard } from "../Board";
-import Piece, { PieceKind } from "../Piece";
-import { PieceMovements } from "./Piece";
-import { PieveMovKindResolver } from "./pieces";
+} from "@/lib/AN/Square";
+import Board, { initBoard } from "@/lib/Board";
+import Piece, { PieceKind } from "@/lib/Piece";
+import { PieceMovements } from "@/lib/move/Piece";
+import { PieveMovKindResolver } from "@/lib/move/pieces";
 
 export function* simValidMoves(
   piece: Piece,

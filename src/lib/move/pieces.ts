@@ -1,5 +1,10 @@
-import { extractSNotation, squareNotation, SquareNotation } from "../AN/Square";
-import { PieceMoveType } from "./Piece";
+import {
+  extractSNotation,
+  squareNotation,
+  SquareNotation,
+} from "@/lib/AN/Square";
+
+import { PieceMoveType } from "@/lib/move/Piece";
 import {
   diagsBL,
   diagsBR,
@@ -9,7 +14,7 @@ import {
   horizR,
   vertB,
   vertT,
-} from "./squares";
+} from "@/lib/move/squares";
 
 export type PieceMoveGeneratorFn = (
   square: SquareNotation,

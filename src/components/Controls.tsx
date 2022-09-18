@@ -1,9 +1,9 @@
-import styles from "./Controls.module.css";
+import styles from "@/components/Controls.module.css";
 import { m } from "framer-motion";
 
-import Flip from "./icons/Flip";
+import Flip from "@/components/icons/Flip";
 
-import { chessStore, selectIsFlipped, useChessStore } from "../lib/Chess";
+import { chessStore, selectIsFlipped, useChessStore } from "@/lib/Chess";
 
 export default function Controls() {
   const isFlipped = useChessStore(selectIsFlipped);

@@ -1,6 +1,6 @@
-import { PieceKind } from "../Piece";
-import { pieceNotation } from "./Piece";
-import { SquareNotation, extractSNotation } from "./Square";
+import { PieceKind } from "@/lib/Piece";
+import { pieceNotation } from "@/lib/AN/Piece";
+import { SquareNotation, extractSNotation } from "@/lib/AN/Square";
 
 export enum MoveType {
   Move,
