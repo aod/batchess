@@ -29,16 +29,16 @@ Blazingly fast digital carved wood game.
 
 ## Tech Stack
 
-[vite]: https://reactjs.org
+[vite]: https://vitejs.dev
 [vitest]: https://vitest.dev
 [react]: https://reactjs.org
 [motion]: https://www.framer.com/motion
 [cfpages]: https://pages.cloudflare.com/
 
-- [Vite](vite) + [Vitest](vitest) (build tool and testing framework)
-- [React](react) (frontend libray, using only built-in state management)
-- [Motion](motion) (animations and dragging support for React)
-- [Cloudflare Pages](cfpages) (static file hosting service)
+- [Vite][vite] + [Vitest][vitest] (build tool and testing framework)
+- [React][react] (frontend libray, using only built-in state management)
+- [Motion][motion] (animations and dragging support for React)
+- [Cloudflare Pages][cfpages] (static file hosting service)
 
 # Development
 
