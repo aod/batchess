@@ -7,27 +7,48 @@ export enum PieceMoveType {
   Diagonal,
   Knight,
   King,
+  EnPassant,
+  Fork,
 }
 
-export default interface PieceMovement {
-  type: PieceMoveType[];
+export enum PieceMoveStrategy {
+  Any,
+  Trace,
 }
 
-export const PieceMovements: Readonly<
-  Record<PieceKind, Readonly<PieceMovement>>
-> = {
-  [PieceKind.King]: { type: [PieceMoveType.King] },
-  [PieceKind.Queen]: {
-    type: [
-      PieceMoveType.Horizontal,
-      PieceMoveType.Vertical,
-      PieceMoveType.Diagonal,
-    ],
-  },
-  [PieceKind.Bishop]: { type: [PieceMoveType.Diagonal] },
-  [PieceKind.Knight]: { type: [PieceMoveType.Knight] },
-  [PieceKind.Rook]: {
-    type: [PieceMoveType.Horizontal, PieceMoveType.Vertical],
-  },
-  [PieceKind.Pawn]: { type: [PieceMoveType.Pawn] },
+export type PieceMovement = {
+  type: PieceMoveType;
+  strategy: PieceMoveStrategy;
+  isPassive?: boolean;
+};
+export type PieceMovements = PieceMovement[];
+
+export const PieceMovements: { [K in PieceKind]: Readonly<PieceMovements> } = {
+  [PieceKind.King]: [
+    { type: PieceMoveType.King, strategy: PieceMoveStrategy.Any },
+  ],
+  [PieceKind.Queen]: [
+    { type: PieceMoveType.Horizontal, strategy: PieceMoveStrategy.Trace },
+    { type: PieceMoveType.Vertical, strategy: PieceMoveStrategy.Trace },
+    { type: PieceMoveType.Diagonal, strategy: PieceMoveStrategy.Trace },
+  ],
+  [PieceKind.Bishop]: [
+    { type: PieceMoveType.Diagonal, strategy: PieceMoveStrategy.Trace },
+  ],
+  [PieceKind.Knight]: [
+    { type: PieceMoveType.Knight, strategy: PieceMoveStrategy.Any },
+  ],
+  [PieceKind.Rook]: [
+    { type: PieceMoveType.Horizontal, strategy: PieceMoveStrategy.Trace },
+    { type: PieceMoveType.Vertical, strategy: PieceMoveStrategy.Trace },
+  ],
+  [PieceKind.Pawn]: [
+    {
+      type: PieceMoveType.Pawn,
+      strategy: PieceMoveStrategy.Trace,
+      isPassive: true,
+    },
+    { type: PieceMoveType.Fork, strategy: PieceMoveStrategy.Any },
+    { type: PieceMoveType.EnPassant, strategy: PieceMoveStrategy.Any },
+  ],
 };

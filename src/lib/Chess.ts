@@ -1,13 +1,9 @@
 import { useSyncExternalStore } from "react";
 
-import {
-  extractSNotation,
-  squareNotation,
-  SquareNotation,
-} from "@/lib/AN/Square";
+import { SquareNotation } from "@/lib/AN/Square";
 import Board, { initBoard } from "@/lib/Board";
-import { simValidMoves } from "@/lib/move/valid";
 import { PieceKind } from "@/lib/Piece";
+import { simulateMove } from "@/lib/move/simulate";
 
 export interface ChessState {
   board: Board;
@@ -57,11 +53,13 @@ export function createChessStore(state: ChessState): ChessStore {
     playMove(a, b) {
       const piece = state.board[a];
       if (!piece) return false;
-      const validMoves = [
-        ...simValidMoves(piece, a, state.board, state.currentTurn),
-      ];
 
-      if (!validMoves.includes(b)) return false;
+      const validMoves = [
+        ...simulateMove(piece, a, state.board, state.currentTurn),
+      ];
+      const move = validMoves.find((move) => move.to === b);
+      if (!move) return false;
+
       if (
         piece.kind === PieceKind.Pawn &&
         piece.firstMoveAtTurn === undefined
@@ -69,17 +67,10 @@ export function createChessStore(state: ChessState): ChessStore {
         piece.firstMoveAtTurn = state.currentTurn;
       }
 
-      const toPiece = state.board[b];
-      // en passant
-      if (piece.kind === PieceKind.Pawn && toPiece === null) {
-        const [aFile, aRank] = extractSNotation(a);
-        const [bFile] = extractSNotation(b);
-        if (aFile !== bFile) {
-          state.board[squareNotation(bFile, aRank)] = null;
-        }
+      if (move.caputres) {
+        state.board[move.caputres] = null;
       }
-
-      state.board[b] = state.board[a];
+      state.board[move.to] = state.board[a];
       state.board[a] = null;
 
       state.isCurrentTurnWhite = !state.isCurrentTurnWhite;

@@ -12,7 +12,7 @@ import {
   selectIsFlipped,
   useChessStore,
 } from "@/lib/Chess";
-import { simValidMoves } from "@/lib/move/valid";
+import { simulateMove } from "@/lib/move/simulate";
 
 export default function App() {
   if (!moveSfx) throw fetchMoveSfx();
@@ -30,8 +30,10 @@ export default function App() {
   const possibleMoveSquares = (s: SquareNotation) => {
     const piece = board[s];
     if (!piece) return [];
-    const moves = [...simValidMoves(piece, s, board, currentTurn)];
-    return moves;
+    const moves = [...simulateMove(piece, s, board, currentTurn)];
+    return moves.flatMap(({ to, caputres }) =>
+      caputres ? [caputres, to] : [to]
+    );
   };
 
   return (
