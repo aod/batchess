@@ -140,7 +140,7 @@ if (import.meta.vitest) {
       hasMoved: false,
     });
     const actual = [...tor];
-    const expected = [["b3", "b4", "a3", "c3"]];
+    const expected = [["b3", "b4"]];
     expect(actual.sort()).toStrictEqual(expected.sort());
   });
 
