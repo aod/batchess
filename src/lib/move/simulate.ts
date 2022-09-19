@@ -14,7 +14,7 @@ import Piece, { createPiece, PieceKind } from "@/lib/Piece";
 
 export interface Move {
   to: SquareNotation;
-  caputres?: SquareNotation;
+  changes: [SquareNotation, SquareNotation | null][];
 }
 
 export function* simulateMove(
@@ -29,15 +29,61 @@ export function* simulateMove(
 
     for (const squares of generator(from, {
       isWhite: piece.isWhite,
-      hasMoved:
-        piece.kind === PieceKind.Pawn && piece.firstMoveAtTurn !== undefined,
+      hasMoved: piece.firstMoveAtTurn !== undefined,
     })) {
       for (const s of squares) {
         const boardPiece = board[s];
         const hasPiece = boardPiece !== null;
         const isOwnPiece = boardPiece?.isWhite === piece.isWhite;
-        const isTrace = move.strategy === PieceMoveStrategy.Trace;
 
+        // TODO: Refactor
+        if (move.type === PieceMoveType.Castling) {
+          if (piece.firstMoveAtTurn !== undefined) continue;
+          if (board[s] !== null) continue;
+
+          const [file, rank] = extractSNotation(s);
+          const rightMostPieceS = squareNotation("h", rank);
+          const rightMostPiece = board[rightMostPieceS];
+          const leftMostPieceS = squareNotation("a", rank);
+          const leftMostPiece = board[leftMostPieceS];
+
+          if (
+            file === "g" &&
+            board[squareNotation("f", rank)] === null &&
+            rightMostPiece?.kind === PieceKind.Rook &&
+            rightMostPiece.firstMoveAtTurn === undefined
+          ) {
+            yield {
+              to: s,
+              changes: [
+                [s, from],
+                [from, null],
+                [squareNotation("f", rank), rightMostPieceS],
+                [rightMostPieceS, null],
+              ],
+            };
+          } else if (
+            file === "c" &&
+            board[squareNotation("d", rank)] === null &&
+            board[squareNotation("b", rank)] === null &&
+            leftMostPiece?.kind === PieceKind.Rook &&
+            leftMostPiece.firstMoveAtTurn === undefined
+          ) {
+            yield {
+              to: s,
+              changes: [
+                [s, from],
+                [from, null],
+                [squareNotation("d", rank), leftMostPieceS],
+                [leftMostPieceS, null],
+              ],
+            };
+          }
+
+          continue;
+        }
+
+        // TODO: Refactor
         if (!hasPiece) {
           if (move.type === PieceMoveType.Fork) continue;
           else if (move.type === PieceMoveType.EnPassant) {
@@ -51,23 +97,46 @@ export function* simulateMove(
               p?.isWhite !== piece.isWhite &&
               p.firstMoveAtTurn === currentTurn - 1
             ) {
-              yield { to: s, caputres: ps };
+              yield {
+                to: s,
+                changes: [
+                  [ps, null],
+                  [s, from],
+                  [from, null],
+                ],
+              };
             }
-          } else yield { to: s };
+          } else
+            yield {
+              to: s,
+              changes: [
+                [s, from],
+                [from, null],
+              ],
+            };
           continue;
         }
 
+        const isTrace = move.strategy === PieceMoveStrategy.Path;
+        const isLeap = move.strategy === PieceMoveStrategy.Leap;
+
         if (isOwnPiece) {
           if (isTrace) break;
-          continue;
+          if (isLeap) continue;
         }
 
         if (move.isPassive) {
           if (isTrace) break;
-          continue;
+          if (isLeap) continue;
         }
 
-        yield { to: s, caputres: s };
+        yield {
+          to: s,
+          changes: [
+            [s, from],
+            [from, null],
+          ],
+        };
         if (isTrace) break;
       }
     }
@@ -77,7 +146,7 @@ export function* simulateMove(
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
 
-  test("e4 pawn push", () => {
+  test("simulateMove: e4 pawn push", () => {
     const ret = simulateMove(
       createPiece(PieceKind.Pawn, true),
       "e2",
@@ -85,11 +154,27 @@ if (import.meta.vitest) {
       0
     );
     const actual = [...ret];
-    const expected: typeof actual = [{ to: "e4" }, { to: "e3" }];
-    expect(actual).toStrictEqual(expect.arrayContaining(expected));
+
+    const expected: typeof actual = [
+      {
+        to: "e3",
+        changes: [
+          ["e3", "e2"],
+          ["e2", null],
+        ],
+      },
+      {
+        to: "e4",
+        changes: [
+          ["e4", "e2"],
+          ["e2", null],
+        ],
+      },
+    ];
+    expect(expected).toStrictEqual(expect.arrayContaining(actual));
   });
 
-  test("e4 pawn push has moved", () => {
+  test("simulateMove: e4 pawn push has moved", () => {
     const ret = simulateMove(
       {
         kind: PieceKind.Pawn,
@@ -101,11 +186,19 @@ if (import.meta.vitest) {
       0
     );
     const actual = [...ret];
-    const expected: typeof actual = [{ to: "e3" }];
-    expect(actual).toStrictEqual(expect.arrayContaining(expected));
+    const expected: typeof actual = [
+      {
+        to: "e3",
+        changes: [
+          ["e3", "e2"],
+          ["e2", null],
+        ],
+      },
+    ];
+    expect(expected).toStrictEqual(expect.arrayContaining(actual));
   });
 
-  test("queen stuck", () => {
+  test("simulateMove: queen stuck", () => {
     const ret = simulateMove(
       {
         kind: PieceKind.Queen,
@@ -117,10 +210,10 @@ if (import.meta.vitest) {
     );
     const actual = [...ret];
     const expected: typeof actual = [];
-    expect(actual).toStrictEqual(expected);
+    expect(expected).toStrictEqual(expect.arrayContaining(actual));
   });
 
-  test("knight boxed in but can move", () => {
+  test("simulateMove: knight boxed in but can move", () => {
     const ret = simulateMove(
       {
         kind: PieceKind.Knight,
@@ -131,11 +224,26 @@ if (import.meta.vitest) {
       0
     );
     const actual = [...ret];
-    const expected: typeof actual = [{ to: "a3" }, { to: "c3" }];
-    expect(actual).toStrictEqual(expect.arrayContaining(expected));
+    const expected: typeof actual = [
+      {
+        to: "a3",
+        changes: [
+          ["a3", "b1"],
+          ["b1", null],
+        ],
+      },
+      {
+        to: "c3",
+        changes: [
+          ["c3", "b1"],
+          ["b1", null],
+        ],
+      },
+    ];
+    expect(expected).toStrictEqual(expect.arrayContaining(actual));
   });
 
-  test("queen comes out", () => {
+  test("simulateMove: queen comes out", () => {
     const ret = simulateMove(
       {
         kind: PieceKind.Queen,
@@ -147,19 +255,91 @@ if (import.meta.vitest) {
     );
     const actual = [...ret];
     const expected: typeof actual = [
-      { to: "c3" },
-      { to: "b4" },
-      { to: "a5" },
-      { to: "d3" },
-      { to: "d4" },
-      { to: "d5" },
-      { to: "d6" },
-      { to: "d7", caputres: "d7" },
-      { to: "e3" },
-      { to: "f4" },
-      { to: "g5" },
-      { to: "h6" },
+      {
+        to: "d3",
+        changes: [
+          ["d3", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "d4",
+        changes: [
+          ["d4", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "d5",
+        changes: [
+          ["d5", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "d6",
+        changes: [
+          ["d6", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "d7",
+        changes: [
+          ["d7", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "c3",
+        changes: [
+          ["c3", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "b4",
+        changes: [
+          ["b4", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "a5",
+        changes: [
+          ["a5", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "e3",
+        changes: [
+          ["e3", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "f4",
+        changes: [
+          ["f4", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "g5",
+        changes: [
+          ["g5", "d2"],
+          ["d2", null],
+        ],
+      },
+      {
+        to: "h6",
+        changes: [
+          ["h6", "d2"],
+          ["d2", null],
+        ],
+      },
     ];
-    expect(actual).toStrictEqual(expect.arrayContaining(expected));
+    expect(expected).toStrictEqual(expect.arrayContaining(actual));
   });
 }

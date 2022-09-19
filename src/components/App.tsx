@@ -31,9 +31,7 @@ export default function App() {
     const piece = board[s];
     if (!piece) return [];
     const moves = [...simulateMove(piece, s, board, currentTurn)];
-    return moves.flatMap(({ to, caputres }) =>
-      caputres ? [caputres, to] : [to]
-    );
+    return moves.map(({ to }) => to);
   };
 
   return (

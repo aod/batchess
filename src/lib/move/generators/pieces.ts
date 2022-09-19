@@ -79,14 +79,19 @@ export const PieveMovKindResolver: Readonly<PieceMovesGenerators> = {
     yield* collect(diagsBL(square));
   },
 
-  [PieceMoveType.EnPassant]: function* (square, isWhite) {
+  [PieceMoveType.EnPassant]: function* (square, { isWhite }) {
     yield* collect(ifMoveable(square, 1, isWhite ? 1 : -1));
     yield* collect(ifMoveable(square, -1, isWhite ? 1 : -1));
   },
 
-  [PieceMoveType.Fork]: function* (square, isWhite) {
+  [PieceMoveType.Fork]: function* (square, { isWhite }) {
     yield* collect(ifMoveable(square, 1, isWhite ? 1 : -1));
     yield* collect(ifMoveable(square, -1, isWhite ? 1 : -1));
+  },
+
+  [PieceMoveType.Castling]: function* (square) {
+    yield* collect(ifMoveable(square, 2, 0));
+    yield* collect(ifMoveable(square, -2, 0));
   },
 };
 
@@ -110,17 +115,33 @@ function skip<T>(it: Iterator<T>, n = 1) {
   return it;
 }
 
+function* always<T>(value: T) {
+  for (;;) {
+    yield value;
+  }
+}
+
 function* ifMoveable(
   start: SquareNotation,
   fileOffset: number,
   rankeOffset: number
 ) {
-  const horizIt = fileOffset > 0 ? horizR(start) : horizL(start);
+  const horizIt =
+    fileOffset === 0
+      ? always(start)
+      : fileOffset > 0
+      ? horizR(start)
+      : horizL(start);
   skip(horizIt, Math.abs(fileOffset) - 1);
   const horizCurr = horizIt.next();
   if (horizCurr.done) return;
 
-  const vertIt = rankeOffset > 0 ? vertT(start) : vertB(start);
+  const vertIt =
+    rankeOffset === 0
+      ? always(start)
+      : rankeOffset > 0
+      ? vertT(start)
+      : vertB(start);
   skip(vertIt, Math.abs(rankeOffset) - 1);
   const vertCurr = vertIt.next();
   if (vertCurr.done) return;

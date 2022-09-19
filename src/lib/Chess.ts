@@ -60,18 +60,14 @@ export function createChessStore(state: ChessState): ChessStore {
       const move = validMoves.find((move) => move.to === b);
       if (!move) return false;
 
-      if (
-        piece.kind === PieceKind.Pawn &&
-        piece.firstMoveAtTurn === undefined
-      ) {
+      if (piece.firstMoveAtTurn === undefined) {
         piece.firstMoveAtTurn = state.currentTurn;
       }
 
-      if (move.caputres) {
-        state.board[move.caputres] = null;
+      for (const [x, y] of move.changes) {
+        if (y) state.board[x] = state.board[y];
+        else state.board[x] = null;
       }
-      state.board[move.to] = state.board[a];
-      state.board[a] = null;
 
       state.isCurrentTurnWhite = !state.isCurrentTurnWhite;
       state.currentTurn += 1;
