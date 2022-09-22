@@ -8,13 +8,7 @@ export default function Spinner(props: SpinnerProps) {
   const color = props.color ?? "var(--fg-color)";
 
   return (
-    <svg
-      className="text-zinc-300"
-      viewBox="0 0 2400 2400"
-      width={size}
-      height={size}
-      color={color}
-    >
+    <svg viewBox="0 0 2400 2400" width={size} height={size} color={color}>
       <g
         strokeWidth={200}
         strokeLinecap="round"

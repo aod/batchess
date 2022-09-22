@@ -5,7 +5,7 @@ import {
 } from "@/lib/AN/Square";
 import Rank from "@/lib/Rank";
 import File from "@/lib/File";
-import { nxtChr } from "@/util";
+import { nxtChr } from "@/util/string";
 
 export function* horiz(from: SquareNotation): Generator<SquareNotation> {
   yield* horizR(from);
