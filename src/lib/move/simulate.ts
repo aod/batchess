@@ -288,6 +288,7 @@ if (import.meta.vitest) {
       },
       {
         to: "d7",
+        isCapture: true,
         changes: [
           ["d7", "d2"],
           ["d2", null],
