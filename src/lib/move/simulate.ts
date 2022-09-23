@@ -14,6 +14,7 @@ import Piece, { createPiece, PieceKind } from "@/lib/Piece";
 
 export interface Move {
   to: SquareNotation;
+  isCapture?: boolean;
   changes: [SquareNotation, SquareNotation | null][];
 }
 
@@ -99,6 +100,7 @@ export function* simulateMove(
             ) {
               yield {
                 to: s,
+                isCapture: true,
                 changes: [
                   [ps, null],
                   [s, from],
@@ -132,6 +134,7 @@ export function* simulateMove(
 
         yield {
           to: s,
+          isCapture: true,
           changes: [
             [s, from],
             [from, null],

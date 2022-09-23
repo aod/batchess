@@ -2,7 +2,6 @@ import { useSyncExternalStore } from "react";
 
 import { SquareNotation } from "@/lib/AN/Square";
 import Board, { initBoard } from "@/lib/Board";
-import { PieceKind } from "@/lib/Piece";
 import { simulateMove } from "@/lib/move/simulate";
 
 export interface ChessState {
@@ -18,14 +17,17 @@ export interface ExternalStore<T> {
 }
 
 export interface ChessStore extends ExternalStore<ChessState> {
-  playMove(a: SquareNotation, b: SquareNotation): boolean;
+  playMove(
+    a: SquareNotation,
+    b: SquareNotation
+  ): { hasMoved: boolean; isCapture?: boolean };
   setIsFlipped(isFlipped: boolean): void;
 }
 
 export function initialChessState(): ChessState {
   return {
     board: initBoard(),
-    isCurrentTurnWhite: false,
+    isCurrentTurnWhite: true,
     isFlipped: false,
     currentTurn: 1,
   };
@@ -52,28 +54,28 @@ export function createChessStore(state: ChessState): ChessStore {
 
     playMove(a, b) {
       const piece = state.board[a];
-      if (!piece) return false;
+      if (!piece) return { hasMoved: false };
 
       const validMoves = [
         ...simulateMove(piece, a, state.board, state.currentTurn),
       ];
       const move = validMoves.find((move) => move.to === b);
-      if (!move) return false;
+      if (!move) return { hasMoved: false };
 
       if (piece.firstMoveAtTurn === undefined) {
         piece.firstMoveAtTurn = state.currentTurn;
       }
 
-      for (const [x, y] of move.changes) {
-        if (y) state.board[x] = state.board[y];
-        else state.board[x] = null;
+      for (const [dest, src] of move.changes) {
+        if (src) state.board[dest] = state.board[src];
+        else state.board[dest] = null;
       }
 
       state.isCurrentTurnWhite = !state.isCurrentTurnWhite;
       state.currentTurn += 1;
 
       notify();
-      return true;
+      return { hasMoved: true, isCapture: move.isCapture };
     },
 
     setIsFlipped(isFlipped) {
