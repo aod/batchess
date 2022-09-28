@@ -51,8 +51,8 @@ export default function Board() {
   const isFlipped = useChessStore(selectIsFlipped);
   const currentTurn = useChessStore(selectCurrentTurn);
 
-  const playMoveSfx = useAudio("/sound/Move.ogg");
-  const playCaptureSfx = useAudio("/sound/Capture.ogg");
+  const playMoveSfx = useAudio("/sound/Move.mp3");
+  const playCaptureSfx = useAudio("/sound/Capture.mp3");
 
   const ref = useRef<HTMLDivElement>(null);
   const [currPieceStartIdx, setCurrPieceStartIdx] = useState<XY | null>(null);
