@@ -2,6 +2,7 @@
   width: calc(8 * var(--piece-size));
   position: relative;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .row {

@@ -5,6 +5,7 @@
   display: inline-block;
   background-color: var(--color);
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .dark {
