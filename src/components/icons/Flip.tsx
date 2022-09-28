@@ -4,7 +4,7 @@ export interface FlipProps {
 }
 
 export default function Flip(props: FlipProps) {
-  const size = props.size ?? "1.5rem";
+  const size = props.size ?? 24;
   const color = props.color ?? "var(--fg-color)";
 
   return (

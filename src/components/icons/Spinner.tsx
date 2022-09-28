@@ -4,7 +4,7 @@ export interface SpinnerProps {
 }
 
 export default function Spinner(props: SpinnerProps) {
-  const size = props.size ?? "1.5rem";
+  const size = props.size ?? 24;
   const color = props.color ?? "var(--fg-color)";
 
   return (
