@@ -1,5 +1,6 @@
 import File, { Files } from "@/lib/File";
 import Rank, { Ranks } from "@/lib/Rank";
+import XY from "@/util/XY";
 
 export type SquareNotation = `${File}${Rank}`;
 

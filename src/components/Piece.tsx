@@ -2,19 +2,16 @@ import styles from "@/components/Piece.module.css";
 import { CSSProperties, useContext, useRef, useState } from "react";
 import { m, useDragControls } from "framer-motion";
 
-import {
-  PieceMoveHandlerContext,
-  BoardDragConstraintRefContext,
-} from "@/components/Board";
-
 import TPiece, { PieceKind } from "@/lib/Piece";
+import { PieceMoveHandlerContext } from "@/contexts/PieceMoveHandlerContext";
+import { BoardRefContext } from "@/contexts/BoardRefContext";
 
 export interface PieceProps {
   piece: TPiece;
 }
 
 export default function Piece(props: PieceProps) {
-  const dragConstraintsRef = useContext(BoardDragConstraintRefContext);
+  const dragConstraintsRef = useContext(BoardRefContext);
   const { onPieceMove, reset, play } = useContext(PieceMoveHandlerContext);
 
   const ref = useRef<HTMLDivElement>(null);

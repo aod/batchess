@@ -4,7 +4,3 @@
   user-select: none;
   -webkit-user-select: none;
 }
-
-.row {
-  height: var(--piece-size);
-}
