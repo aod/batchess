@@ -5,30 +5,35 @@ import { Suspense, useRef } from "react";
 import Board from "@/components/Board";
 import Controls from "@/components/Controls";
 import Spinner from "@/components/icons/Spinner";
+import Title from "@/components/Title";
 
 import withDelay from "@/hoc/withDelay";
 import { BoardRefProvider } from "@/contexts/BoardRefContext";
 import { PieceMoveHandlerProvider } from "@/contexts/PieceMoveHandlerContext";
+import { PiecesThemeProvider } from "@/contexts/PiecesThemeContext";
 
 export default function App() {
   const Fallback = withDelay(Spinner);
   const boardRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div id="app" className={styles.app}>
-      <div className={styles.game}>
-        <Suspense fallback={<Fallback />}>
-          <LazyMotion strict features={loadMotionFeatures}>
-            <BoardRefProvider boardRef={boardRef}>
-              <PieceMoveHandlerProvider>
-                <Board ref={boardRef} />
-              </PieceMoveHandlerProvider>
-            </BoardRefProvider>
-            <Controls />
-          </LazyMotion>
-        </Suspense>
+    <PiecesThemeProvider>
+      <div id="app" className={styles.app}>
+        <Title />
+        <div className={styles.game}>
+          <Suspense fallback={<Fallback />}>
+            <LazyMotion strict features={loadMotionFeatures}>
+              <BoardRefProvider boardRef={boardRef}>
+                <PieceMoveHandlerProvider>
+                  <Board ref={boardRef} />
+                </PieceMoveHandlerProvider>
+              </BoardRefProvider>
+              <Controls />
+            </LazyMotion>
+          </Suspense>
+        </div>
       </div>
-    </div>
+    </PiecesThemeProvider>
   );
 }
 

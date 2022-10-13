@@ -5,6 +5,7 @@ import { m, useDragControls } from "framer-motion";
 import TPiece, { PieceKind } from "@/lib/Piece";
 import { PieceMoveHandlerContext } from "@/contexts/PieceMoveHandlerContext";
 import { BoardRefContext } from "@/contexts/BoardRefContext";
+import { PiecesThemeContext } from "@/contexts/PiecesThemeContext";
 
 export interface PieceProps {
   piece: TPiece;
@@ -13,6 +14,7 @@ export interface PieceProps {
 export default function Piece(props: PieceProps) {
   const dragConstraintsRef = useContext(BoardRefContext);
   const { onPieceMove, reset, play } = useContext(PieceMoveHandlerContext);
+  const { theme } = useContext(PiecesThemeContext);
 
   const ref = useRef<HTMLDivElement>(null);
   const dragControls = useDragControls();
@@ -59,6 +61,10 @@ export default function Piece(props: PieceProps) {
         {
           ["--piece-offset"]: props.piece.kind,
           ["--piece-is-black"]: props.piece.isWhite ? 0 : 1,
+          ["--pieces-theme-sprite"]:
+            theme === "normal"
+              ? "url(/Chess_Pieces_Sprite.svg)"
+              : "url(/Chess_Pieces_Sprite_Batchess.svg)",
         } as CSSProperties
       }
     />

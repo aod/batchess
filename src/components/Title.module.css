@@ -1,0 +1,39 @@
+.char {
+  position: relative;
+  display: inline;
+}
+
+.underline {
+  position: absolute;
+  left: 0;
+  bottom: -5;
+  height: 0.25rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  background-color: var(--fg-color);
+
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 650ms;
+}
+
+.active {
+  filter: none;
+  background-color: var(--dark-square-color);
+}
+
+.title {
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.heading {
+  position: relative;
+  display: inline;
+  padding: 0;
+  margin: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: help;
+}

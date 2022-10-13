@@ -1,7 +1,7 @@
 .piece {
   width: var(--piece-size);
   height: var(--piece-size);
-  background: url(/Chess_Pieces_Sprite.svg);
+  background-image: var(--pieces-theme-sprite);
   background-position-x: calc(var(--piece-size) * var(--piece-offset) * -1);
   background-position-y: calc(var(--piece-is-black) * var(--piece-size));
   background-size: calc(6 * var(--piece-size)) calc(2 * var(--piece-size));
