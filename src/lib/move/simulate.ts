@@ -96,7 +96,8 @@ export function* simulateMove(
             if (
               p?.kind === PieceKind.Pawn &&
               p?.isWhite !== piece.isWhite &&
-              p.firstMoveAtTurn === currentTurn - 1
+              p.firstMoveAtTurn === currentTurn - 1 &&
+              (r === 5 || r === 4)
             ) {
               yield {
                 to: s,
