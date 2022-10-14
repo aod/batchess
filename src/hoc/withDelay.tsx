@@ -6,7 +6,11 @@ interface WithDelayProps {
 
 const DEFAULT_MS = 500;
 
-export default function withDelay<T extends object>(Component: FC<T>) {
+export default function withDelay<T extends object>(
+  Component: FC<T>,
+  isHidden?: boolean,
+  ms = DEFAULT_MS
+) {
   return (props: WithDelayProps & T) => {
     const [render, setRender] = useState(false);
 
@@ -14,11 +18,21 @@ export default function withDelay<T extends object>(Component: FC<T>) {
       () =>
         clearTimeout.bind(
           null,
-          setTimeout(() => setRender(true), props.ms ?? DEFAULT_MS)
+          setTimeout(() => setRender(true), props.ms ?? ms)
         ),
       []
     );
 
-    return <>{render && <Component {...props} />}</>;
+    return (
+      <>
+        {isHidden ? (
+          <div style={{ visibility: render ? "unset" : "hidden" }}>
+            <Component {...props} />
+          </div>
+        ) : (
+          render && <Component {...props} />
+        )}
+      </>
+    );
   };
 }

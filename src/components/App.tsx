@@ -13,7 +13,7 @@ import { PieceMoveHandlerProvider } from "@/contexts/PieceMoveHandlerContext";
 import { PiecesThemeProvider } from "@/contexts/PiecesThemeContext";
 
 export default function App() {
-  const Fallback = withDelay(Spinner);
+  const Fallback = withDelay(HiddenGameWSpinner, true);
   const boardRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -34,6 +34,19 @@ export default function App() {
         </div>
       </div>
     </PiecesThemeProvider>
+  );
+}
+
+function HiddenGameWSpinner() {
+  return (
+    <div
+      style={{
+        height: "calc(var(--piece-size) * 8)",
+        width: "calc(calc(var(--piece-size) * 8) + 2.5rem)",
+      }}
+    >
+      <Spinner />
+    </div>
   );
 }
 
