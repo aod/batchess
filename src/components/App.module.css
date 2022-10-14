@@ -1,14 +1,29 @@
 .app {
-  height: calc(var(--piece-size) * 8);
+  --board-size: calc(var(--piece-size) * 8);
+  height: var(--board-size);
   display: flex;
-  gap: 0.5rem;
+  gap: 0.875rem;
   flex-direction: column;
   justify-content: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: var(--board-size);
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.subheader {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
 }
 
 .game {
   display: flex;
   gap: 0.5rem;
+  align-items: flex-end;
 }
 
 .fen {
@@ -26,5 +41,9 @@
   .fen {
     font-size: 10pt;
     padding: 0 0.25rem;
+  }
+
+  .header {
+    padding: 0 0.5rem;
   }
 }

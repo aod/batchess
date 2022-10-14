@@ -8,6 +8,11 @@
   --circle-move-hint-color: #ccc149;
 }
 
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
 #root {
   overflow: hidden;
   height: 100vh;

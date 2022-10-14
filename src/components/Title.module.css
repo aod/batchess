@@ -24,8 +24,9 @@
 }
 
 .title {
-  margin-bottom: 0.75rem;
   position: relative;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
 .heading {

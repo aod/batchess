@@ -19,7 +19,19 @@ export default function App() {
   return (
     <PiecesThemeProvider>
       <div id="app" className={styles.app}>
-        <Title />
+        <header className={styles.header}>
+          <Title />
+          <span className={styles.subheader}>
+            <a
+              href="http://l.yatko.dev/batchess-src"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono"
+            >
+              Source
+            </a>
+          </span>
+        </header>
         <div className={styles.game}>
           <Suspense fallback={<Fallback />}>
             <LazyMotion strict features={loadMotionFeatures}>
