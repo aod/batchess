@@ -14,6 +14,7 @@ import { chessStore, selectIsFlipped, useChessStore } from "@/lib/Chess";
 import XY, { boardXYtoIdx, XYtoSquare } from "@/util/XY";
 
 export interface IPieceMoveHandlerContext {
+  previousMove?: [SquareNotation, SquareNotation];
   pieceStartIdx: XY | null;
   movingPieceIdx: XY | null;
   onPieceMove: (xy: XY) => void;
@@ -32,6 +33,8 @@ export function PieceMoveHandlerProvider(props: PropsWithChildren) {
   const playMoveSfx = useAudio("/sound/Move.mp3");
   const playCaptureSfx = useAudio("/sound/Capture.mp3");
 
+  const [previousMove, setPreviouseMove] =
+    useState<IPieceMoveHandlerContext["previousMove"]>();
   const [pieceStartIdx, setPieceStartIdx] =
     useState<IPieceMoveHandlerContext["pieceStartIdx"]>(null);
   const [movingPieceIdx, setMovingPieceIdx] =
@@ -62,6 +65,7 @@ export function PieceMoveHandlerProvider(props: PropsWithChildren) {
     let to = toBoardSquare(movingPieceIdx!);
     const { hasMoved, isCapture } = chessStore.playMove(from, to);
     if (hasMoved) {
+      setPreviouseMove([from, to]);
       if (isCapture) playCaptureSfx();
       else playMoveSfx();
     }
@@ -83,6 +87,7 @@ export function PieceMoveHandlerProvider(props: PropsWithChildren) {
   return (
     <PieceMoveHandlerContext.Provider
       value={{
+        previousMove,
         movingPieceIdx,
         pieceStartIdx,
         play,
