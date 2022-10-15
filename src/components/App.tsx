@@ -5,7 +5,7 @@ import { Suspense, useRef } from "react";
 import Board from "@/components/Board";
 import Controls from "@/components/Controls";
 import Spinner from "@/components/icons/Spinner";
-import Title from "@/components/Title";
+import Header from "@/components/Header";
 
 import withDelay from "@/hoc/withDelay";
 import { BoardRefProvider } from "@/contexts/BoardRefContext";
@@ -19,19 +19,7 @@ export default function App() {
   return (
     <PiecesThemeProvider>
       <div id="app" className={styles.app}>
-        <header className={styles.header}>
-          <Title />
-          <span className={styles.subheader}>
-            <a
-              href="http://l.yatko.dev/batchess-src"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono"
-            >
-              Source
-            </a>
-          </span>
-        </header>
+        <Header />
         <div className={styles.game}>
           <Suspense fallback={<Fallback />}>
             <LazyMotion strict features={loadMotionFeatures}>

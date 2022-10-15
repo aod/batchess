@@ -1,0 +1,12 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: var(--board-size);
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.subheader {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
