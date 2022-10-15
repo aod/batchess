@@ -5,16 +5,16 @@ import useSquareSize from "@/hooks/useSquareSize";
 
 export default function HighlightStartSquare() {
   const { pieceStartIdx } = useContext(PieceMoveHandlerContext);
-  const getSquareSize = useSquareSize();
+  const squareSize = useSquareSize();
 
   return (
     <div
       style={{
         position: "absolute",
-        left: pieceStartIdx!.x * getSquareSize(),
-        top: pieceStartIdx!.y * getSquareSize(),
-        width: getSquareSize(),
-        height: getSquareSize(),
+        left: pieceStartIdx!.x * squareSize,
+        top: pieceStartIdx!.y * squareSize,
+        width: squareSize,
+        height: squareSize,
         backgroundColor: "var(--square-move-start-color)",
         opacity: 0.8,
       }}

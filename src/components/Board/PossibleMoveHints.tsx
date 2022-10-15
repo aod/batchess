@@ -14,7 +14,7 @@ import XY, { sNotationToIdx, XYtoSquare } from "@/util/XY";
 
 export default function PossibleMoveHints() {
   const { pieceStartIdx } = useContext(PieceMoveHandlerContext);
-  const getSquareSize = useSquareSize();
+  const squareSize = useSquareSize();
 
   const board = useChessStore(selectBoard);
   const isFlipped = useChessStore(selectIsFlipped);
@@ -57,20 +57,16 @@ export default function PossibleMoveHints() {
           key={i}
           style={{
             position: "absolute",
-            left: sNotationToIdx(square).x * getSquareSize(),
-            top: sNotationToIdx(square).y * getSquareSize(),
+            left: sNotationToIdx(square).x * squareSize,
+            top: sNotationToIdx(square).y * squareSize,
           }}
-          width={getSquareSize()}
-          height={getSquareSize()}
+          width={squareSize}
+          height={squareSize}
         >
           <circle
-            cx={getSquareSize() / 2}
-            cy={getSquareSize() / 2}
-            r={
-              doesHitOpponentsPiece(square)
-                ? getSquareSize()
-                : getSquareSize() / 7
-            }
+            cx={squareSize / 2}
+            cy={squareSize / 2}
+            r={doesHitOpponentsPiece(square) ? squareSize : squareSize / 7}
             fill={
               doesHitOpponentsPiece(square)
                 ? "none"
@@ -81,7 +77,7 @@ export default function PossibleMoveHints() {
                 ? "var(--circle-move-hint-color)"
                 : "none"
             }
-            strokeWidth={getSquareSize() * 0.95}
+            strokeWidth={squareSize * 0.95}
           />
         </svg>
       ))}
