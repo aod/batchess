@@ -96,3 +96,5 @@ export function useChessStore<T>(selector: (state: ChessState) => T) {
 export const selectBoard = (state: ChessState) => state.board;
 export const selectIsFlipped = (state: ChessState) => state.isFlipped;
 export const selectCurrentTurn = (state: ChessState) => state.currentTurn;
+export const selectIsCurrentTurnWhite = (state: ChessState) =>
+  state.isCurrentTurnWhite;

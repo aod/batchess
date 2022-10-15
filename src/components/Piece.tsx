@@ -9,6 +9,7 @@ import { PiecesThemeContext } from "@/contexts/PiecesThemeContext";
 
 export interface PieceProps {
   piece: TPiece;
+  disabled?: boolean;
 }
 
 export default function Piece(props: PieceProps) {
@@ -30,12 +31,13 @@ export default function Piece(props: PieceProps) {
       data-kind={PieceKind[props.piece.kind]}
       dragSnapToOrigin
       dragControls={dragControls}
-      drag
+      drag={!props.disabled ?? true}
       dragTransition={{
         bounceStiffness: 200,
         bounceDamping: 30,
       }}
       onPointerDown={(e) => {
+        if (props.disabled) return;
         ref.current!.style.cursor = "grabbing";
         dragControls.start(e, { snapToCursor: true });
         onPieceMove({ x: e.clientX, y: e.clientY });
