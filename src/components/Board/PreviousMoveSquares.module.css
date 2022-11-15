@@ -1,0 +1,11 @@
+.fromSquare {
+  width: 100%;
+  height: 100%;
+  border: 0.2rem solid black;
+}
+
+.toSquare {
+  width: 100%;
+  height: 100%;
+  border: 0.2rem solid black;
+}

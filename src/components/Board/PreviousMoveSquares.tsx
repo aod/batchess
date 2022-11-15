@@ -1,12 +1,12 @@
+import styles from "./PreviousMoveSquares.module.css";
 import { useContext } from "react";
 
 import { PieceMoveHandlerContext } from "@/contexts/PieceMoveHandlerContext";
-import useSquareSize from "@/hooks/useSquareSize";
 import { sNotationToIdx } from "@/util/XY";
+import Square from "@/components/Board/Square";
 
 export default function PreviouseMoveSquares() {
   const { previousMove } = useContext(PieceMoveHandlerContext);
-  const squareSize = useSquareSize();
 
   const [fromS, toS] = previousMove!;
 
@@ -15,26 +15,12 @@ export default function PreviouseMoveSquares() {
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          left: from!.x * squareSize,
-          top: from!.y * squareSize,
-          width: squareSize,
-          height: squareSize,
-          border: "0.2rem solid black",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          left: to!.x * squareSize,
-          top: to!.y * squareSize,
-          width: squareSize,
-          height: squareSize,
-          border: "0.2rem solid black",
-        }}
-      />
+      <Square x={from!.x} y={from!.y}>
+        <div className={styles.fromSquare} />
+      </Square>
+      <Square x={to!.x} y={to!.y}>
+        <div className={styles.toSquare} />
+      </Square>
     </>
   );
 }

@@ -1,23 +1,15 @@
+import styles from "./HighlightStartSquare.module.css";
 import { useContext } from "react";
 
 import { PieceMoveHandlerContext } from "@/contexts/PieceMoveHandlerContext";
-import useSquareSize from "@/hooks/useSquareSize";
+import Square from "@/components/Board/Square";
 
 export default function HighlightStartSquare() {
   const { pieceStartIdx } = useContext(PieceMoveHandlerContext);
-  const squareSize = useSquareSize();
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: pieceStartIdx!.x * squareSize,
-        top: pieceStartIdx!.y * squareSize,
-        width: squareSize,
-        height: squareSize,
-        backgroundColor: "var(--square-move-start-color)",
-        opacity: 0.8,
-      }}
-    ></div>
+    <Square x={pieceStartIdx!.x} y={pieceStartIdx!.y}>
+      <div className={styles.hlStartSquare} />
+    </Square>
   );
 }

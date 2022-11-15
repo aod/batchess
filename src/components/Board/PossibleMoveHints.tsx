@@ -1,7 +1,6 @@
 import { useCallback, useContext, useMemo } from "react";
 
 import { PieceMoveHandlerContext } from "@/contexts/PieceMoveHandlerContext";
-import useSquareSize from "@/hooks/useSquareSize";
 import { flipSNotation, SquareNotation } from "@/lib/AN/Square";
 import {
   useChessStore,
@@ -11,10 +10,10 @@ import {
 } from "@/lib/Chess";
 import { simulateMove } from "@/lib/move/simulate";
 import XY, { sNotationToIdx, XYtoSquare } from "@/util/XY";
+import Square from "@/components/Board/Square";
 
 export default function PossibleMoveHints() {
   const { pieceStartIdx } = useContext(PieceMoveHandlerContext);
-  const squareSize = useSquareSize();
 
   const board = useChessStore(selectBoard);
   const isFlipped = useChessStore(selectIsFlipped);
@@ -53,34 +52,33 @@ export default function PossibleMoveHints() {
   return (
     <>
       {possibleMoveSquares.map((square, i) => (
-        <svg
+        <Square
+          x={sNotationToIdx(square).x}
+          y={sNotationToIdx(square).y}
           key={i}
-          style={{
-            position: "absolute",
-            left: sNotationToIdx(square).x * squareSize,
-            top: sNotationToIdx(square).y * squareSize,
-          }}
-          width={squareSize}
-          height={squareSize}
         >
-          <circle
-            cx={squareSize / 2}
-            cy={squareSize / 2}
-            r={doesHitOpponentsPiece(square) ? squareSize : squareSize / 7}
-            fill={
-              doesHitOpponentsPiece(square)
-                ? "none"
-                : "var(--circle-move-hint-color)"
-            }
-            stroke={
-              doesHitOpponentsPiece(square)
-                ? "var(--circle-move-hint-color)"
-                : "none"
-            }
-            strokeWidth={squareSize * 0.95}
-          />
-        </svg>
+          <Dot isCapture={doesHitOpponentsPiece(square)} />
+        </Square>
       ))}
     </>
+  );
+}
+
+interface DotProps {
+  isCapture?: boolean;
+}
+
+function Dot(props: DotProps) {
+  return (
+    <svg width="100%" height="100%">
+      <circle
+        cx="50%"
+        cy="50%"
+        r={props.isCapture ? "100%" : "15%"}
+        fill={props.isCapture ? "none" : "var(--circle-move-hint-color)"}
+        stroke={props.isCapture ? "var(--circle-move-hint-color)" : "none"}
+        strokeWidth="95%"
+      />
+    </svg>
   );
 }

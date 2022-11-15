@@ -1,22 +1,15 @@
+import styles from "./HighlightMoveSquare.module.css";
 import { useContext } from "react";
 
 import { PieceMoveHandlerContext } from "@/contexts/PieceMoveHandlerContext";
-import useSquareSize from "@/hooks/useSquareSize";
+import Square from "@/components/Board/Square";
 
 export default function HighlightMoveSquare() {
   const { movingPieceIdx } = useContext(PieceMoveHandlerContext);
-  const squareSize = useSquareSize();
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: movingPieceIdx!.x * squareSize,
-        top: movingPieceIdx!.y * squareSize,
-        width: squareSize,
-        height: squareSize,
-        border: "0.25rem solid #e0e0e0",
-      }}
-    ></div>
+    <Square x={movingPieceIdx!.x} y={movingPieceIdx!.y}>
+      <div className={styles.hlMoveSquare} />
+    </Square>
   );
 }
